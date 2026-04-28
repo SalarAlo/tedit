@@ -13,7 +13,7 @@ Terminal::Terminal() {
 	noecho();
 	keypad(stdscr, true);
 
-	set_cursor_visibility(CursorVisibility::Invisible);
+	set_cursor_visibility(CursorVisibility::Visible);
 }
 
 Terminal::~Terminal() {

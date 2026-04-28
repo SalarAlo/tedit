@@ -1,8 +1,10 @@
 #pragma once
 
-#include <cstddef>
 #include <cstdint>
 #include <curses.h>
+
+#include <algorithm>
+#include <cstddef>
 #include <filesystem>
 #include <stdexcept>
 #include <string>

@@ -2,24 +2,12 @@
 
 namespace Tedit {
 
-void Cursor::left() {
-	m_col--;
+void Cursor::apply_cursor(Terminal& terminal) const {
+	terminal.move_cursor(row, col + 2);
 }
 
-void Cursor::right() {
-	m_col++;
-}
-
-void Cursor::up() {
-	m_row++;
-}
-
-void Cursor::down() {
-	m_row--;
-}
-
-void Cursor::apply_cursor(Terminal& terminal) {
-	terminal.move_cursor(m_row, m_col);
+bool Cursor::is_at_beginning() const {
+	return col == 0 && row == 0;
 }
 
 }

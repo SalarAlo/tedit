@@ -1,9 +1,8 @@
 #pragma once
 
-#include "BufferSource.h"
-#include "Editor.h"
-
 namespace Tedit {
+
+class Editor;
 
 enum class Command {
 	InsertChar,

@@ -1,10 +1,14 @@
 #include "Editor.h"
 
-#include "CommandMapper.h"
+#include "InsertMode.h"
 
 namespace Tedit {
 
-std::string format_line_number(int line, int width) {
+Editor::Editor() {
+	change_mode(std::make_unique<InsertMode>());
+}
+
+std::string Editor::format_line_number(int line, int width) {
 	std::ostringstream oss;
 	oss << std::setw(width) << line;
 	return oss.str();
@@ -17,30 +21,38 @@ void Editor::poll_events() {
 void Editor::draw() {
 	m_terminal.clear();
 
-	size_t indent_width { 1 };
-	int gutter_width = std::to_string(m_buffer.line_count()).size() + indent_width;
+	size_t gutter_width = std::to_string(m_buffer.line_count()).size();
 
-	bool relative { true };
+	draw_gutter(gutter_width, true);
+	draw_text(gutter_width);
 
+	int offset = gutter_width + m_indent + 1;
+	m_terminal.move_cursor(m_cursor.row, m_cursor.col + offset);
+
+	m_terminal.present();
+}
+
+void Editor::draw_gutter(size_t gutter_width, bool relative) {
 	for (int i = 0; i < m_buffer.line_count(); i++) {
-		bool is_cursor_line { m_cursor.row == i };
+		bool is_current_line { i == m_cursor.row };
 		int line { relative ? make_relative(i) : i + 1 };
-		std::string number = format_line_number(line, gutter_width - (is_cursor_line ? indent_width : 0)); // 1-based
-		std::string indent {};
 
-		if (is_cursor_line)
-			for (size_t i {}; i < indent_width; i++)
-				indent += " ";
+		std::string number = format_line_number(
+		    line,
+		    gutter_width + (is_current_line ? 0 : m_indent));
 
-		std::string text = (m_cursor.row == i ? indent : "") + std::string(m_buffer.line(i));
-
-		m_terminal.draw_text(i, 0, number + " " + text);
+		m_terminal.draw_text(i, 0, number);
 	}
+}
 
+void Editor::draw_text(size_t gutter_width) {
 	int offset = gutter_width + 1;
 
-	m_terminal.move_cursor(m_cursor.row, m_cursor.col + offset);
-	m_terminal.present();
+	for (int i = 0; i < m_buffer.line_count(); i++) {
+		std::string text = std::string(m_buffer.line(i));
+
+		m_terminal.draw_text(i, offset + m_indent, text);
+	}
 }
 
 bool Editor::should_close() const {
@@ -48,7 +60,7 @@ bool Editor::should_close() const {
 }
 
 void Editor::update() {
-	CommandMapper::map(m_last_key)->execute(*this);
+	m_mode->map(m_last_key)->execute(*this);
 }
 
 void Editor::backspace() {
@@ -112,6 +124,11 @@ int Editor::make_relative(int line) {
 		return line + 1;
 
 	return std::abs(m_cursor.row - line);
+}
+
+void Editor::change_mode(std::unique_ptr<Mode> mode) {
+	m_mode.release();
+	m_mode = std::move(mode);
 }
 
 }

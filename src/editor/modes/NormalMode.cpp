@@ -1,6 +1,7 @@
 #include "NormalMode.h"
 
 #include "ChangeToMode.h"
+#include "CloseCommand.h"
 #include "InsertMode.h"
 
 #include "commands/MoveDownCommand.h"
@@ -12,7 +13,7 @@
 namespace Tedit {
 
 std::string NormalMode::get_name() {
-	return "NORMAL";
+	return "normal";
 }
 
 std::unique_ptr<ICommand> NormalMode::map(int key) {
@@ -46,6 +47,9 @@ std::unique_ptr<ICommand> NormalMode::map(int key) {
 	case '\n':
 	case '\r':
 		return std::make_unique<NewlineCommand>();
+
+	case 'q':
+		return std::make_unique<CloseCommand>();
 
 	default:
 		return nullptr;

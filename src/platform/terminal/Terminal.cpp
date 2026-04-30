@@ -9,6 +9,7 @@ Terminal::Terminal() {
 		throw std::runtime_error("Failed to initialise Terminal UI.");
 	}
 
+	set_escdelay(0);
 	cbreak();
 	noecho();
 	keypad(stdscr, true);
@@ -42,6 +43,12 @@ void Terminal::move_cursor(int row, int col) {
 
 int Terminal::read_key() {
 	return getch();
+}
+
+std::pair<int, int> Terminal::get_terminal_dimensions() {
+	int rows, cols;
+	getmaxyx(stdscr, rows, cols);
+	return std::make_pair(cols, rows);
 }
 
 }

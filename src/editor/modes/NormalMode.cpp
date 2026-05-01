@@ -3,6 +3,7 @@
 #include "ChangeToMode.h"
 #include "CloseCommand.h"
 #include "InsertMode.h"
+#include "SaveCurrentBufferCommand.h"
 
 #include "commands/MoveDownCommand.h"
 #include "commands/MoveLeftCommand.h"
@@ -29,6 +30,8 @@ std::unique_ptr<ICommand> NormalMode::map(int key) {
 		return std::make_unique<MoveUpCommand>();
 	case 'l':
 		return std::make_unique<MoveRightCommand>();
+	case 's':
+		return std::make_unique<SaveCurrentBufferCommand>();
 
 	case KEY_LEFT:
 		return std::make_unique<MoveLeftCommand>();

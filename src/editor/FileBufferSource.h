@@ -1,18 +1,17 @@
 #pragma once
 
-#include "BufferSource.h"
+#include "TextBufferSource.h"
 
 namespace Tedit {
-class FileBufferSource : public BufferSource {
+class FileBufferSource : public TextBufferSource {
 public:
 	FileBufferSource(const fs::path& path);
 
 	void write(std::string_view txt) override;
 	std::string read() override;
-	std::string get_display_name() const override;
 
 private:
-	fs::path m_path {};
+	fs::path m_file {};
 };
 
 }

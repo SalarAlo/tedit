@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include "Cursor.h"
 #include "FileBufferSource.h"
 #include "TextBuffer.h"
@@ -28,6 +30,8 @@ public:
 	void move_up();
 	void move_down();
 	void move_end_line();
+
+	void write_contents() { m_buffer.write_into_source(); }
 
 	void change_mode(std::unique_ptr<Mode> mode);
 

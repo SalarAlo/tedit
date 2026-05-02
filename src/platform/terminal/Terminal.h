@@ -6,7 +6,7 @@ namespace Tedit {
 
 class Terminal {
 public:
-	Terminal();
+	static Terminal& get_instance();
 	~Terminal();
 
 	Terminal(const Terminal&) = delete;
@@ -23,6 +23,9 @@ public:
 	std::pair<int, int> get_terminal_dimensions();
 
 	int read_key();
+
+private:
+	Terminal();
 };
 
 }

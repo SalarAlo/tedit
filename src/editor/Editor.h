@@ -3,8 +3,11 @@
 #include <memory>
 
 #include "Cursor.h"
-#include "FileBufferSource.h"
-#include "TextBuffer.h"
+
+#include "buffer/FileBufferSource.h"
+#include "buffer/TextBuffer.h"
+
+#include "command_line/CommandLine.h"
 
 #include "modes/Mode.h"
 
@@ -31,9 +34,13 @@ public:
 	void move_down();
 	void move_end_line();
 
-	void write_contents() { m_buffer.write_into_source(); }
-
 	void change_mode(std::unique_ptr<Mode> mode);
+	void save_to_buffer();
+
+	Cursor& get_cursor();
+
+	void activate_command_line();
+	void deactivate_command_line();
 
 private:
 	std::string current_line() const;
@@ -45,6 +52,7 @@ private:
 	std::unique_ptr<Mode> m_mode {};
 
 	bool m_should_close {};
+	CommandLine m_cmd_line {};
 };
 
 }

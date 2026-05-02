@@ -51,4 +51,10 @@ std::pair<int, int> Terminal::get_terminal_dimensions() {
 	return std::make_pair(cols, rows);
 }
 
+Terminal& Terminal::get_instance() {
+	static Terminal instance {};
+
+	return instance;
+}
+
 }

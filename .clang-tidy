@@ -23,4 +23,11 @@ CheckOptions:
   - key: readability-identifier-naming.ProtectedMemberCase
     value: lower_case
 
+  # static constexpr (class constants) → ALL_CAPS
+  - key: readability-identifier-naming.ClassConstantCase
+    value: UPPER_CASE
+
+  # (optional but recommended) global constants → ALL_CAPS
+  - key: readability-identifier-naming.GlobalConstantCase
+    value: UPPER_CASE
 

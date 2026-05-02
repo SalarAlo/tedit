@@ -1,43 +1,43 @@
 #include "InsertMode.h"
 
-#include "BackspaceCommand.h"
-#include "ChangeToMode.h"
-#include "InsertCharCommand.h"
-#include "MoveDownCommand.h"
-#include "MoveLeftCommand.h"
-#include "MoveRightCommand.h"
-#include "MoveUpCommand.h"
-#include "NewlineCommand.h"
+#include "BackspaceAction.h"
+#include "ChangeToModeAction.h"
+#include "InsertCharAction.h"
+#include "MoveDownAction.h"
+#include "MoveLeftAction.h"
+#include "MoveRightAction.h"
+#include "MoveUpAction.h"
+#include "NewlineAction.h"
 #include "NormalMode.h"
 
 namespace Tedit {
 
 std::string InsertMode::get_name() { return "insert"; }
 
-std::unique_ptr<ICommand> InsertMode::map(int key) {
+std::unique_ptr<IAction> InsertMode::map_action(int key) {
 	switch (key) {
 	case KEY_BACKSPACE:
 	case 127:
 	case 8:
-		return std::make_unique<BackspaceCommand>();
+		return std::make_unique<BackspaceAction>();
 
 	case '\n':
 	case '\r':
-		return std::make_unique<NewlineCommand>();
+		return std::make_unique<NewlineAction>();
 
 	case KEY_LEFT:
-		return std::make_unique<MoveLeftCommand>();
+		return std::make_unique<MoveLeftAction>();
 	case KEY_RIGHT:
-		return std::make_unique<MoveRightCommand>();
+		return std::make_unique<MoveRightAction>();
 	case KEY_UP:
-		return std::make_unique<MoveUpCommand>();
+		return std::make_unique<MoveUpAction>();
 	case KEY_DOWN:
-		return std::make_unique<MoveDownCommand>();
+		return std::make_unique<MoveDownAction>();
 	case 27:
-		return std::make_unique<ChangeToMode>(std::make_unique<NormalMode>());
+		return std::make_unique<ChangeToModeAction>(std::make_unique<NormalMode>());
 
 	default:
-		return std::make_unique<InsertCharCommand>(key);
+		return std::make_unique<InsertCharAction>(key);
 	}
 }
 

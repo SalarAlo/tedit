@@ -1,15 +1,21 @@
+#include <memory>
+
 #include "NormalMode.h"
 
-#include "ChangeToMode.h"
-#include "CloseCommand.h"
+#include "ChangeToCommandMode.h"
+#include "ChangeToModeAction.h"
+#include "CloseAction.h"
+#include "CommandLine.h"
+#include "CommandMode.h"
+#include "CompositeAction.h"
 #include "InsertMode.h"
-#include "SaveCurrentBufferCommand.h"
+#include "SaveBufferAction.h"
 
-#include "commands/MoveDownCommand.h"
-#include "commands/MoveLeftCommand.h"
-#include "commands/MoveRightCommand.h"
-#include "commands/MoveUpCommand.h"
-#include "commands/NewlineCommand.h"
+#include "actions/MoveDownAction.h"
+#include "actions/MoveLeftAction.h"
+#include "actions/MoveRightAction.h"
+#include "actions/MoveUpAction.h"
+#include "actions/NewlineAction.h"
 
 namespace Tedit {
 
@@ -17,42 +23,45 @@ std::string NormalMode::get_name() {
 	return "normal";
 }
 
-std::unique_ptr<ICommand> NormalMode::map(int key) {
+std::unique_ptr<IAction> NormalMode::map_action(int key) {
 	switch (key) {
 	case 'a':
-		return std::make_unique<ChangeToMode>(std::make_unique<InsertMode>());
+		return std::make_unique<ChangeToModeAction>(std::make_unique<InsertMode>());
 
 	case 'h':
-		return std::make_unique<MoveLeftCommand>();
+		return std::make_unique<MoveLeftAction>();
 	case 'j':
-		return std::make_unique<MoveDownCommand>();
+		return std::make_unique<MoveDownAction>();
 	case 'k':
-		return std::make_unique<MoveUpCommand>();
+		return std::make_unique<MoveUpAction>();
 	case 'l':
-		return std::make_unique<MoveRightCommand>();
+		return std::make_unique<MoveRightAction>();
 	case 's':
-		return std::make_unique<SaveCurrentBufferCommand>();
+		return std::make_unique<SaveBufferAction>();
+
+	case CommandLine::COMMAND_LINE_KEY:
+		return std::make_unique<ChangeToCommandMode>();
 
 	case KEY_LEFT:
-		return std::make_unique<MoveLeftCommand>();
+		return std::make_unique<MoveLeftAction>();
 	case KEY_RIGHT:
-		return std::make_unique<MoveRightCommand>();
+		return std::make_unique<MoveRightAction>();
 	case KEY_UP:
-		return std::make_unique<MoveUpCommand>();
+		return std::make_unique<MoveUpAction>();
 	case KEY_DOWN:
-		return std::make_unique<MoveDownCommand>();
+		return std::make_unique<MoveDownAction>();
 
 	case KEY_BACKSPACE:
 	case 127:
 	case 8:
-		return std::make_unique<MoveLeftCommand>();
+		return std::make_unique<MoveLeftAction>();
 
 	case '\n':
 	case '\r':
-		return std::make_unique<NewlineCommand>();
+		return std::make_unique<NewlineAction>();
 
 	case 'q':
-		return std::make_unique<CloseCommand>();
+		return std::make_unique<CloseAction>();
 
 	default:
 		return nullptr;

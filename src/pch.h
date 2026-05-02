@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <curses.h>
+#include <expected>
 
 #include <algorithm>
 #include <cstddef>

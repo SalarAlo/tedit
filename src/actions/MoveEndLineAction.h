@@ -4,9 +4,11 @@
 #include "Editor.h"
 
 namespace Tedit {
-class LeaveCommandMode : public IAction {
+class MoveEndLineAction : public IAction {
 public:
 	void execute(Editor& e);
+
+private:
 };
 
 }

@@ -1,12 +1,11 @@
 #include "CommandMode.h"
 
 #include "BackspaceAction.h"
-#include "ChangeToModeAction.h"
+#include "ExecAndLeaveCommandMode.h"
 #include "InsertCharAction.h"
 #include "LeaveCommandMode.h"
 #include "MoveLeftAction.h"
 #include "MoveRightAction.h"
-#include "NormalMode.h"
 
 namespace Tedit {
 
@@ -27,7 +26,7 @@ std::unique_ptr<IAction> CommandMode::map_action(int key) {
 
 	case '\n':
 	case '\r':
-		return std::make_unique<LeaveCommandMode>();
+		return std::make_unique<ExecAndLeaveCommandMode>();
 
 	default:
 		return std::make_unique<InsertCharAction>(key);

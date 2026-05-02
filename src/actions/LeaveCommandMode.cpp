@@ -1,5 +1,7 @@
 #include "LeaveCommandMode.h"
 
+#include "NormalMode.h"
+
 namespace Tedit {
 
 void LeaveCommandMode::execute(Editor& e) {

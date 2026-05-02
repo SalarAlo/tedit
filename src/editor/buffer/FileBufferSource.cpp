@@ -1,3 +1,6 @@
+#include <fstream>
+#include <stdexcept>
+
 #include "FileBufferSource.h"
 
 namespace Tedit {

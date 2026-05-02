@@ -1,8 +1,5 @@
 #pragma once
 
-#include <fstream>
-#include <stdexcept>
-
 #include "TextBufferSource.h"
 
 namespace Tedit {

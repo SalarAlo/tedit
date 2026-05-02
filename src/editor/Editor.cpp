@@ -2,12 +2,12 @@
 
 #include "Editor.h"
 
-#include "InsertMode.h"
+#include "NormalMode.h"
 
 namespace Tedit {
 
 Editor::Editor() {
-	change_mode(std::make_unique<InsertMode>());
+	change_mode(std::make_unique<NormalMode>());
 }
 
 void Editor::handle_key(int key) {
@@ -41,6 +41,25 @@ void Editor::backspace() {
 		move_left();
 		m_buffer.erase_char(m_cursor.row, m_cursor.col);
 	}
+}
+
+void Editor::delete_char() {
+	if (m_cursor.is_at_beginning())
+		return;
+
+	if (m_cursor.col == 0) {
+		auto deleted_row { m_buffer.line(m_cursor.row) };
+		m_buffer.erase_line(m_cursor.row);
+		move_up();
+		m_buffer.append_to(m_cursor.row, deleted_row);
+		move_end_line();
+
+		return;
+	}
+
+	move_left();
+	m_buffer.erase_char(m_cursor.row, m_cursor.col);
+	move_right();
 }
 
 void Editor::newline() {
@@ -127,5 +146,25 @@ void Editor::deactivate_command_line() {
 	m_cmd_line.cursor_col = 1;
 	m_cmd_line.is_active = false;
 }
+
+void Editor::parse_and_leave_cmd_line() {
+	auto result { CommandLineParser::parse(m_cmd_line.command) };
+	deactivate_command_line();
+
+	if (result.has_value()) {
+		switch (*result) {
+		case CommandType::Write:
+			save_to_buffer();
+			break;
+		case CommandType::Quit:
+			m_should_close = true;
+			break;
+		}
+	}
+
+	m_cmd_line.inactive_output = result.error_or("");
+}
+
+void Editor::move_start_line() { m_cursor.col = 0; }
 
 }

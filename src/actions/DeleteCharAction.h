@@ -4,7 +4,7 @@
 #include "Editor.h"
 
 namespace Tedit {
-class LeaveCommandMode : public IAction {
+class DeleteCharAction : public IAction {
 public:
 	void execute(Editor& e);
 };

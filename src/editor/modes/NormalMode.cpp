@@ -1,3 +1,5 @@
+#include <cctype>
+
 #include <memory>
 
 #include "NormalMode.hpp"
@@ -56,7 +58,7 @@ std::unique_ptr<IAction> NormalMode::map_action(int key) {
 		return std::make_unique<MoveRightAction>();
 
 	case '0':
-		[[fallthrough]];
+		return std::make_unique<MoveLineStartAction>();
 	case '_':
 		return std::make_unique<MoveLineStartAction>();
 	case '$':
@@ -91,8 +93,11 @@ std::unique_ptr<IAction> NormalMode::map_action(int key) {
 	case 8:
 		return std::make_unique<MoveLeftAction>();
 
-	default:
+	default: {
+		if (std::isdigit(key)) {
+		}
 		return nullptr;
+	}
 	}
 }
 

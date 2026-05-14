@@ -14,10 +14,7 @@ Editor::Editor() {
 }
 
 void Editor::handle_key(int key) {
-	auto action { m_mode->map_action(key) };
-
-	if (action)
-		action->execute(*this);
+	m_input_handler.handle_key(key);
 }
 
 void Editor::backspace() {
@@ -186,5 +183,7 @@ void Editor::parse_and_leave_cmd_line() {
 }
 
 void Editor::move_start_line() { m_cursor.col = 0; }
+
+Mode* Editor::get_mode() { return m_mode.get(); }
 
 }

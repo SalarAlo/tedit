@@ -10,6 +10,8 @@
 
 #include "command_line/CommandLine.hpp"
 
+#include "input/InputHandler.hpp"
+
 #include "modes/Mode.hpp"
 
 namespace Tedit {
@@ -43,6 +45,7 @@ public:
 	void save_to_buffer();
 
 	Cursor& get_cursor();
+	Mode* get_mode();
 
 	void activate_command_line();
 	void deactivate_command_line();
@@ -51,13 +54,14 @@ private:
 	std::string current_line() const;
 
 private:
-	int m_last_key {};
 	TextBuffer m_buffer { std::make_unique<FileBufferSource>("./assets/file.txt") };
 	Cursor m_cursor {};
-	std::unique_ptr<Mode> m_mode {};
-
-	bool m_should_close { false };
 	CommandLine m_cmd_line {};
+	std::unique_ptr<Mode> m_mode {};
+	InputHandler m_input_handler { *this };
+
+	int m_last_key {};
+	bool m_should_close { false };
 	size_t m_top_row { 0 };
 };
 

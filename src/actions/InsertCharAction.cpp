@@ -1,6 +1,6 @@
-#include "InsertCharAction.h"
+#include "InsertCharAction.hpp"
 
-#include "Editor.h"
+#include "Editor.hpp"
 
 namespace Tedit {
 

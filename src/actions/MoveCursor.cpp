@@ -1,4 +1,4 @@
-#include "MoveCursor.h"
+#include "MoveCursor.hpp"
 
 namespace Tedit {
 

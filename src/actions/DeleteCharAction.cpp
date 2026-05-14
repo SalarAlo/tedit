@@ -1,4 +1,4 @@
-#include "DeleteCharAction.h"
+#include "DeleteCharAction.hpp"
 
 namespace Tedit {
 

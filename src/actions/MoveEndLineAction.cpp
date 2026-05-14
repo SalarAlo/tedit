@@ -1,4 +1,4 @@
-#include "MoveEndLineAction.h"
+#include "MoveEndLineAction.hpp"
 
 namespace Tedit {
 

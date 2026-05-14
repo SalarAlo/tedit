@@ -1,8 +1,8 @@
-#include "Terminal.h"
+#include "Terminal.hpp"
 
-#include "editor/Editor.h"
+#include "editor/Editor.hpp"
 
-#include "rendering/Renderer.h"
+#include "rendering/Renderer.hpp"
 
 int main() {
 	Tedit::Renderer renderer {};

@@ -1,4 +1,4 @@
-#include "ChangeToModeAction.h"
+#include "ChangeToModeAction.hpp"
 
 namespace Tedit {
 

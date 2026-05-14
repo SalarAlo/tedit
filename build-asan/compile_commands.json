@@ -1,0 +1,176 @@
+[
+{
+  "directory": "/home/salar/development/active/tedit/build-asan",
+  "command": "/usr/bin/c++  -I/home/salar/development/active/tedit/src -I/home/salar/development/active/tedit/src/actions -I/home/salar/development/active/tedit/src/editor -I/home/salar/development/active/tedit/src/editor/buffer -I/home/salar/development/active/tedit/src/editor/command_line -I/home/salar/development/active/tedit/src/editor/modes -I/home/salar/development/active/tedit/src/platform -I/home/salar/development/active/tedit/src/platform/terminal -I/home/salar/development/active/tedit/src/rendering -fsanitize=address -fno-omit-frame-pointer -std=c++23 -Wall -Wextra -Wpedantic -Winvalid-pch -x c++-header -include /home/salar/development/active/tedit/build-asan/CMakeFiles/tedit.dir/cmake_pch.hxx -o CMakeFiles/tedit.dir/cmake_pch.hxx.gch -c /home/salar/development/active/tedit/build-asan/CMakeFiles/tedit.dir/cmake_pch.hxx.cxx",
+  "file": "/home/salar/development/active/tedit/build-asan/CMakeFiles/tedit.dir/cmake_pch.hxx.cxx",
+  "output": "CMakeFiles/tedit.dir/cmake_pch.hxx.gch"
+},
+{
+  "directory": "/home/salar/development/active/tedit/build-asan",
+  "command": "/usr/bin/c++  -I/home/salar/development/active/tedit/src -I/home/salar/development/active/tedit/src/actions -I/home/salar/development/active/tedit/src/editor -I/home/salar/development/active/tedit/src/editor/buffer -I/home/salar/development/active/tedit/src/editor/command_line -I/home/salar/development/active/tedit/src/editor/modes -I/home/salar/development/active/tedit/src/platform -I/home/salar/development/active/tedit/src/platform/terminal -I/home/salar/development/active/tedit/src/rendering -fsanitize=address -fno-omit-frame-pointer -std=c++23 -Wall -Wextra -Wpedantic -Winvalid-pch -include /home/salar/development/active/tedit/build-asan/CMakeFiles/tedit.dir/cmake_pch.hxx -o CMakeFiles/tedit.dir/src/Main.cpp.o -c /home/salar/development/active/tedit/src/Main.cpp",
+  "file": "/home/salar/development/active/tedit/src/Main.cpp",
+  "output": "CMakeFiles/tedit.dir/src/Main.cpp.o"
+},
+{
+  "directory": "/home/salar/development/active/tedit/build-asan",
+  "command": "/usr/bin/c++  -I/home/salar/development/active/tedit/src -I/home/salar/development/active/tedit/src/actions -I/home/salar/development/active/tedit/src/editor -I/home/salar/development/active/tedit/src/editor/buffer -I/home/salar/development/active/tedit/src/editor/command_line -I/home/salar/development/active/tedit/src/editor/modes -I/home/salar/development/active/tedit/src/platform -I/home/salar/development/active/tedit/src/platform/terminal -I/home/salar/development/active/tedit/src/rendering -fsanitize=address -fno-omit-frame-pointer -std=c++23 -Wall -Wextra -Wpedantic -Winvalid-pch -include /home/salar/development/active/tedit/build-asan/CMakeFiles/tedit.dir/cmake_pch.hxx -o CMakeFiles/tedit.dir/src/actions/BackspaceAction.cpp.o -c /home/salar/development/active/tedit/src/actions/BackspaceAction.cpp",
+  "file": "/home/salar/development/active/tedit/src/actions/BackspaceAction.cpp",
+  "output": "CMakeFiles/tedit.dir/src/actions/BackspaceAction.cpp.o"
+},
+{
+  "directory": "/home/salar/development/active/tedit/build-asan",
+  "command": "/usr/bin/c++  -I/home/salar/development/active/tedit/src -I/home/salar/development/active/tedit/src/actions -I/home/salar/development/active/tedit/src/editor -I/home/salar/development/active/tedit/src/editor/buffer -I/home/salar/development/active/tedit/src/editor/command_line -I/home/salar/development/active/tedit/src/editor/modes -I/home/salar/development/active/tedit/src/platform -I/home/salar/development/active/tedit/src/platform/terminal -I/home/salar/development/active/tedit/src/rendering -fsanitize=address -fno-omit-frame-pointer -std=c++23 -Wall -Wextra -Wpedantic -Winvalid-pch -include /home/salar/development/active/tedit/build-asan/CMakeFiles/tedit.dir/cmake_pch.hxx -o CMakeFiles/tedit.dir/src/actions/ChangeToModeAction.cpp.o -c /home/salar/development/active/tedit/src/actions/ChangeToModeAction.cpp",
+  "file": "/home/salar/development/active/tedit/src/actions/ChangeToModeAction.cpp",
+  "output": "CMakeFiles/tedit.dir/src/actions/ChangeToModeAction.cpp.o"
+},
+{
+  "directory": "/home/salar/development/active/tedit/build-asan",
+  "command": "/usr/bin/c++  -I/home/salar/development/active/tedit/src -I/home/salar/development/active/tedit/src/actions -I/home/salar/development/active/tedit/src/editor -I/home/salar/development/active/tedit/src/editor/buffer -I/home/salar/development/active/tedit/src/editor/command_line -I/home/salar/development/active/tedit/src/editor/modes -I/home/salar/development/active/tedit/src/platform -I/home/salar/development/active/tedit/src/platform/terminal -I/home/salar/development/active/tedit/src/rendering -fsanitize=address -fno-omit-frame-pointer -std=c++23 -Wall -Wextra -Wpedantic -Winvalid-pch -include /home/salar/development/active/tedit/build-asan/CMakeFiles/tedit.dir/cmake_pch.hxx -o CMakeFiles/tedit.dir/src/actions/CloseAction.cpp.o -c /home/salar/development/active/tedit/src/actions/CloseAction.cpp",
+  "file": "/home/salar/development/active/tedit/src/actions/CloseAction.cpp",
+  "output": "CMakeFiles/tedit.dir/src/actions/CloseAction.cpp.o"
+},
+{
+  "directory": "/home/salar/development/active/tedit/build-asan",
+  "command": "/usr/bin/c++  -I/home/salar/development/active/tedit/src -I/home/salar/development/active/tedit/src/actions -I/home/salar/development/active/tedit/src/editor -I/home/salar/development/active/tedit/src/editor/buffer -I/home/salar/development/active/tedit/src/editor/command_line -I/home/salar/development/active/tedit/src/editor/modes -I/home/salar/development/active/tedit/src/platform -I/home/salar/development/active/tedit/src/platform/terminal -I/home/salar/development/active/tedit/src/rendering -fsanitize=address -fno-omit-frame-pointer -std=c++23 -Wall -Wextra -Wpedantic -Winvalid-pch -include /home/salar/development/active/tedit/build-asan/CMakeFiles/tedit.dir/cmake_pch.hxx -o CMakeFiles/tedit.dir/src/actions/DeleteCharAction.cpp.o -c /home/salar/development/active/tedit/src/actions/DeleteCharAction.cpp",
+  "file": "/home/salar/development/active/tedit/src/actions/DeleteCharAction.cpp",
+  "output": "CMakeFiles/tedit.dir/src/actions/DeleteCharAction.cpp.o"
+},
+{
+  "directory": "/home/salar/development/active/tedit/build-asan",
+  "command": "/usr/bin/c++  -I/home/salar/development/active/tedit/src -I/home/salar/development/active/tedit/src/actions -I/home/salar/development/active/tedit/src/editor -I/home/salar/development/active/tedit/src/editor/buffer -I/home/salar/development/active/tedit/src/editor/command_line -I/home/salar/development/active/tedit/src/editor/modes -I/home/salar/development/active/tedit/src/platform -I/home/salar/development/active/tedit/src/platform/terminal -I/home/salar/development/active/tedit/src/rendering -fsanitize=address -fno-omit-frame-pointer -std=c++23 -Wall -Wextra -Wpedantic -Winvalid-pch -include /home/salar/development/active/tedit/build-asan/CMakeFiles/tedit.dir/cmake_pch.hxx -o CMakeFiles/tedit.dir/src/actions/ExecAndLeaveCommandMode.cpp.o -c /home/salar/development/active/tedit/src/actions/ExecAndLeaveCommandMode.cpp",
+  "file": "/home/salar/development/active/tedit/src/actions/ExecAndLeaveCommandMode.cpp",
+  "output": "CMakeFiles/tedit.dir/src/actions/ExecAndLeaveCommandMode.cpp.o"
+},
+{
+  "directory": "/home/salar/development/active/tedit/build-asan",
+  "command": "/usr/bin/c++  -I/home/salar/development/active/tedit/src -I/home/salar/development/active/tedit/src/actions -I/home/salar/development/active/tedit/src/editor -I/home/salar/development/active/tedit/src/editor/buffer -I/home/salar/development/active/tedit/src/editor/command_line -I/home/salar/development/active/tedit/src/editor/modes -I/home/salar/development/active/tedit/src/platform -I/home/salar/development/active/tedit/src/platform/terminal -I/home/salar/development/active/tedit/src/rendering -fsanitize=address -fno-omit-frame-pointer -std=c++23 -Wall -Wextra -Wpedantic -Winvalid-pch -include /home/salar/development/active/tedit/build-asan/CMakeFiles/tedit.dir/cmake_pch.hxx -o CMakeFiles/tedit.dir/src/actions/InsertCharAction.cpp.o -c /home/salar/development/active/tedit/src/actions/InsertCharAction.cpp",
+  "file": "/home/salar/development/active/tedit/src/actions/InsertCharAction.cpp",
+  "output": "CMakeFiles/tedit.dir/src/actions/InsertCharAction.cpp.o"
+},
+{
+  "directory": "/home/salar/development/active/tedit/build-asan",
+  "command": "/usr/bin/c++  -I/home/salar/development/active/tedit/src -I/home/salar/development/active/tedit/src/actions -I/home/salar/development/active/tedit/src/editor -I/home/salar/development/active/tedit/src/editor/buffer -I/home/salar/development/active/tedit/src/editor/command_line -I/home/salar/development/active/tedit/src/editor/modes -I/home/salar/development/active/tedit/src/platform -I/home/salar/development/active/tedit/src/platform/terminal -I/home/salar/development/active/tedit/src/rendering -fsanitize=address -fno-omit-frame-pointer -std=c++23 -Wall -Wextra -Wpedantic -Winvalid-pch -include /home/salar/development/active/tedit/build-asan/CMakeFiles/tedit.dir/cmake_pch.hxx -o CMakeFiles/tedit.dir/src/actions/LeaveCommandMode.cpp.o -c /home/salar/development/active/tedit/src/actions/LeaveCommandMode.cpp",
+  "file": "/home/salar/development/active/tedit/src/actions/LeaveCommandMode.cpp",
+  "output": "CMakeFiles/tedit.dir/src/actions/LeaveCommandMode.cpp.o"
+},
+{
+  "directory": "/home/salar/development/active/tedit/build-asan",
+  "command": "/usr/bin/c++  -I/home/salar/development/active/tedit/src -I/home/salar/development/active/tedit/src/actions -I/home/salar/development/active/tedit/src/editor -I/home/salar/development/active/tedit/src/editor/buffer -I/home/salar/development/active/tedit/src/editor/command_line -I/home/salar/development/active/tedit/src/editor/modes -I/home/salar/development/active/tedit/src/platform -I/home/salar/development/active/tedit/src/platform/terminal -I/home/salar/development/active/tedit/src/rendering -fsanitize=address -fno-omit-frame-pointer -std=c++23 -Wall -Wextra -Wpedantic -Winvalid-pch -include /home/salar/development/active/tedit/build-asan/CMakeFiles/tedit.dir/cmake_pch.hxx -o CMakeFiles/tedit.dir/src/actions/MoveCursor.cpp.o -c /home/salar/development/active/tedit/src/actions/MoveCursor.cpp",
+  "file": "/home/salar/development/active/tedit/src/actions/MoveCursor.cpp",
+  "output": "CMakeFiles/tedit.dir/src/actions/MoveCursor.cpp.o"
+},
+{
+  "directory": "/home/salar/development/active/tedit/build-asan",
+  "command": "/usr/bin/c++  -I/home/salar/development/active/tedit/src -I/home/salar/development/active/tedit/src/actions -I/home/salar/development/active/tedit/src/editor -I/home/salar/development/active/tedit/src/editor/buffer -I/home/salar/development/active/tedit/src/editor/command_line -I/home/salar/development/active/tedit/src/editor/modes -I/home/salar/development/active/tedit/src/platform -I/home/salar/development/active/tedit/src/platform/terminal -I/home/salar/development/active/tedit/src/rendering -fsanitize=address -fno-omit-frame-pointer -std=c++23 -Wall -Wextra -Wpedantic -Winvalid-pch -include /home/salar/development/active/tedit/build-asan/CMakeFiles/tedit.dir/cmake_pch.hxx -o CMakeFiles/tedit.dir/src/actions/MoveDownAction.cpp.o -c /home/salar/development/active/tedit/src/actions/MoveDownAction.cpp",
+  "file": "/home/salar/development/active/tedit/src/actions/MoveDownAction.cpp",
+  "output": "CMakeFiles/tedit.dir/src/actions/MoveDownAction.cpp.o"
+},
+{
+  "directory": "/home/salar/development/active/tedit/build-asan",
+  "command": "/usr/bin/c++  -I/home/salar/development/active/tedit/src -I/home/salar/development/active/tedit/src/actions -I/home/salar/development/active/tedit/src/editor -I/home/salar/development/active/tedit/src/editor/buffer -I/home/salar/development/active/tedit/src/editor/command_line -I/home/salar/development/active/tedit/src/editor/modes -I/home/salar/development/active/tedit/src/platform -I/home/salar/development/active/tedit/src/platform/terminal -I/home/salar/development/active/tedit/src/rendering -fsanitize=address -fno-omit-frame-pointer -std=c++23 -Wall -Wextra -Wpedantic -Winvalid-pch -include /home/salar/development/active/tedit/build-asan/CMakeFiles/tedit.dir/cmake_pch.hxx -o CMakeFiles/tedit.dir/src/actions/MoveEndLineAction.cpp.o -c /home/salar/development/active/tedit/src/actions/MoveEndLineAction.cpp",
+  "file": "/home/salar/development/active/tedit/src/actions/MoveEndLineAction.cpp",
+  "output": "CMakeFiles/tedit.dir/src/actions/MoveEndLineAction.cpp.o"
+},
+{
+  "directory": "/home/salar/development/active/tedit/build-asan",
+  "command": "/usr/bin/c++  -I/home/salar/development/active/tedit/src -I/home/salar/development/active/tedit/src/actions -I/home/salar/development/active/tedit/src/editor -I/home/salar/development/active/tedit/src/editor/buffer -I/home/salar/development/active/tedit/src/editor/command_line -I/home/salar/development/active/tedit/src/editor/modes -I/home/salar/development/active/tedit/src/platform -I/home/salar/development/active/tedit/src/platform/terminal -I/home/salar/development/active/tedit/src/rendering -fsanitize=address -fno-omit-frame-pointer -std=c++23 -Wall -Wextra -Wpedantic -Winvalid-pch -include /home/salar/development/active/tedit/build-asan/CMakeFiles/tedit.dir/cmake_pch.hxx -o CMakeFiles/tedit.dir/src/actions/MoveLeftAction.cpp.o -c /home/salar/development/active/tedit/src/actions/MoveLeftAction.cpp",
+  "file": "/home/salar/development/active/tedit/src/actions/MoveLeftAction.cpp",
+  "output": "CMakeFiles/tedit.dir/src/actions/MoveLeftAction.cpp.o"
+},
+{
+  "directory": "/home/salar/development/active/tedit/build-asan",
+  "command": "/usr/bin/c++  -I/home/salar/development/active/tedit/src -I/home/salar/development/active/tedit/src/actions -I/home/salar/development/active/tedit/src/editor -I/home/salar/development/active/tedit/src/editor/buffer -I/home/salar/development/active/tedit/src/editor/command_line -I/home/salar/development/active/tedit/src/editor/modes -I/home/salar/development/active/tedit/src/platform -I/home/salar/development/active/tedit/src/platform/terminal -I/home/salar/development/active/tedit/src/rendering -fsanitize=address -fno-omit-frame-pointer -std=c++23 -Wall -Wextra -Wpedantic -Winvalid-pch -include /home/salar/development/active/tedit/build-asan/CMakeFiles/tedit.dir/cmake_pch.hxx -o CMakeFiles/tedit.dir/src/actions/MoveLineStartAction.cpp.o -c /home/salar/development/active/tedit/src/actions/MoveLineStartAction.cpp",
+  "file": "/home/salar/development/active/tedit/src/actions/MoveLineStartAction.cpp",
+  "output": "CMakeFiles/tedit.dir/src/actions/MoveLineStartAction.cpp.o"
+},
+{
+  "directory": "/home/salar/development/active/tedit/build-asan",
+  "command": "/usr/bin/c++  -I/home/salar/development/active/tedit/src -I/home/salar/development/active/tedit/src/actions -I/home/salar/development/active/tedit/src/editor -I/home/salar/development/active/tedit/src/editor/buffer -I/home/salar/development/active/tedit/src/editor/command_line -I/home/salar/development/active/tedit/src/editor/modes -I/home/salar/development/active/tedit/src/platform -I/home/salar/development/active/tedit/src/platform/terminal -I/home/salar/development/active/tedit/src/rendering -fsanitize=address -fno-omit-frame-pointer -std=c++23 -Wall -Wextra -Wpedantic -Winvalid-pch -include /home/salar/development/active/tedit/build-asan/CMakeFiles/tedit.dir/cmake_pch.hxx -o CMakeFiles/tedit.dir/src/actions/MoveRightAction.cpp.o -c /home/salar/development/active/tedit/src/actions/MoveRightAction.cpp",
+  "file": "/home/salar/development/active/tedit/src/actions/MoveRightAction.cpp",
+  "output": "CMakeFiles/tedit.dir/src/actions/MoveRightAction.cpp.o"
+},
+{
+  "directory": "/home/salar/development/active/tedit/build-asan",
+  "command": "/usr/bin/c++  -I/home/salar/development/active/tedit/src -I/home/salar/development/active/tedit/src/actions -I/home/salar/development/active/tedit/src/editor -I/home/salar/development/active/tedit/src/editor/buffer -I/home/salar/development/active/tedit/src/editor/command_line -I/home/salar/development/active/tedit/src/editor/modes -I/home/salar/development/active/tedit/src/platform -I/home/salar/development/active/tedit/src/platform/terminal -I/home/salar/development/active/tedit/src/rendering -fsanitize=address -fno-omit-frame-pointer -std=c++23 -Wall -Wextra -Wpedantic -Winvalid-pch -include /home/salar/development/active/tedit/build-asan/CMakeFiles/tedit.dir/cmake_pch.hxx -o CMakeFiles/tedit.dir/src/actions/MoveUpAction.cpp.o -c /home/salar/development/active/tedit/src/actions/MoveUpAction.cpp",
+  "file": "/home/salar/development/active/tedit/src/actions/MoveUpAction.cpp",
+  "output": "CMakeFiles/tedit.dir/src/actions/MoveUpAction.cpp.o"
+},
+{
+  "directory": "/home/salar/development/active/tedit/build-asan",
+  "command": "/usr/bin/c++  -I/home/salar/development/active/tedit/src -I/home/salar/development/active/tedit/src/actions -I/home/salar/development/active/tedit/src/editor -I/home/salar/development/active/tedit/src/editor/buffer -I/home/salar/development/active/tedit/src/editor/command_line -I/home/salar/development/active/tedit/src/editor/modes -I/home/salar/development/active/tedit/src/platform -I/home/salar/development/active/tedit/src/platform/terminal -I/home/salar/development/active/tedit/src/rendering -fsanitize=address -fno-omit-frame-pointer -std=c++23 -Wall -Wextra -Wpedantic -Winvalid-pch -include /home/salar/development/active/tedit/build-asan/CMakeFiles/tedit.dir/cmake_pch.hxx -o CMakeFiles/tedit.dir/src/actions/NewlineAction.cpp.o -c /home/salar/development/active/tedit/src/actions/NewlineAction.cpp",
+  "file": "/home/salar/development/active/tedit/src/actions/NewlineAction.cpp",
+  "output": "CMakeFiles/tedit.dir/src/actions/NewlineAction.cpp.o"
+},
+{
+  "directory": "/home/salar/development/active/tedit/build-asan",
+  "command": "/usr/bin/c++  -I/home/salar/development/active/tedit/src -I/home/salar/development/active/tedit/src/actions -I/home/salar/development/active/tedit/src/editor -I/home/salar/development/active/tedit/src/editor/buffer -I/home/salar/development/active/tedit/src/editor/command_line -I/home/salar/development/active/tedit/src/editor/modes -I/home/salar/development/active/tedit/src/platform -I/home/salar/development/active/tedit/src/platform/terminal -I/home/salar/development/active/tedit/src/rendering -fsanitize=address -fno-omit-frame-pointer -std=c++23 -Wall -Wextra -Wpedantic -Winvalid-pch -include /home/salar/development/active/tedit/build-asan/CMakeFiles/tedit.dir/cmake_pch.hxx -o CMakeFiles/tedit.dir/src/actions/SaveBufferAction.cpp.o -c /home/salar/development/active/tedit/src/actions/SaveBufferAction.cpp",
+  "file": "/home/salar/development/active/tedit/src/actions/SaveBufferAction.cpp",
+  "output": "CMakeFiles/tedit.dir/src/actions/SaveBufferAction.cpp.o"
+},
+{
+  "directory": "/home/salar/development/active/tedit/build-asan",
+  "command": "/usr/bin/c++  -I/home/salar/development/active/tedit/src -I/home/salar/development/active/tedit/src/actions -I/home/salar/development/active/tedit/src/editor -I/home/salar/development/active/tedit/src/editor/buffer -I/home/salar/development/active/tedit/src/editor/command_line -I/home/salar/development/active/tedit/src/editor/modes -I/home/salar/development/active/tedit/src/platform -I/home/salar/development/active/tedit/src/platform/terminal -I/home/salar/development/active/tedit/src/rendering -fsanitize=address -fno-omit-frame-pointer -std=c++23 -Wall -Wextra -Wpedantic -Winvalid-pch -include /home/salar/development/active/tedit/build-asan/CMakeFiles/tedit.dir/cmake_pch.hxx -o CMakeFiles/tedit.dir/src/actions/SequenceAction.cpp.o -c /home/salar/development/active/tedit/src/actions/SequenceAction.cpp",
+  "file": "/home/salar/development/active/tedit/src/actions/SequenceAction.cpp",
+  "output": "CMakeFiles/tedit.dir/src/actions/SequenceAction.cpp.o"
+},
+{
+  "directory": "/home/salar/development/active/tedit/build-asan",
+  "command": "/usr/bin/c++  -I/home/salar/development/active/tedit/src -I/home/salar/development/active/tedit/src/actions -I/home/salar/development/active/tedit/src/editor -I/home/salar/development/active/tedit/src/editor/buffer -I/home/salar/development/active/tedit/src/editor/command_line -I/home/salar/development/active/tedit/src/editor/modes -I/home/salar/development/active/tedit/src/platform -I/home/salar/development/active/tedit/src/platform/terminal -I/home/salar/development/active/tedit/src/rendering -fsanitize=address -fno-omit-frame-pointer -std=c++23 -Wall -Wextra -Wpedantic -Winvalid-pch -include /home/salar/development/active/tedit/build-asan/CMakeFiles/tedit.dir/cmake_pch.hxx -o CMakeFiles/tedit.dir/src/editor/Cursor.cpp.o -c /home/salar/development/active/tedit/src/editor/Cursor.cpp",
+  "file": "/home/salar/development/active/tedit/src/editor/Cursor.cpp",
+  "output": "CMakeFiles/tedit.dir/src/editor/Cursor.cpp.o"
+},
+{
+  "directory": "/home/salar/development/active/tedit/build-asan",
+  "command": "/usr/bin/c++  -I/home/salar/development/active/tedit/src -I/home/salar/development/active/tedit/src/actions -I/home/salar/development/active/tedit/src/editor -I/home/salar/development/active/tedit/src/editor/buffer -I/home/salar/development/active/tedit/src/editor/command_line -I/home/salar/development/active/tedit/src/editor/modes -I/home/salar/development/active/tedit/src/platform -I/home/salar/development/active/tedit/src/platform/terminal -I/home/salar/development/active/tedit/src/rendering -fsanitize=address -fno-omit-frame-pointer -std=c++23 -Wall -Wextra -Wpedantic -Winvalid-pch -include /home/salar/development/active/tedit/build-asan/CMakeFiles/tedit.dir/cmake_pch.hxx -o CMakeFiles/tedit.dir/src/editor/Editor.cpp.o -c /home/salar/development/active/tedit/src/editor/Editor.cpp",
+  "file": "/home/salar/development/active/tedit/src/editor/Editor.cpp",
+  "output": "CMakeFiles/tedit.dir/src/editor/Editor.cpp.o"
+},
+{
+  "directory": "/home/salar/development/active/tedit/build-asan",
+  "command": "/usr/bin/c++  -I/home/salar/development/active/tedit/src -I/home/salar/development/active/tedit/src/actions -I/home/salar/development/active/tedit/src/editor -I/home/salar/development/active/tedit/src/editor/buffer -I/home/salar/development/active/tedit/src/editor/command_line -I/home/salar/development/active/tedit/src/editor/modes -I/home/salar/development/active/tedit/src/platform -I/home/salar/development/active/tedit/src/platform/terminal -I/home/salar/development/active/tedit/src/rendering -fsanitize=address -fno-omit-frame-pointer -std=c++23 -Wall -Wextra -Wpedantic -Winvalid-pch -include /home/salar/development/active/tedit/build-asan/CMakeFiles/tedit.dir/cmake_pch.hxx -o CMakeFiles/tedit.dir/src/editor/buffer/FileBufferSource.cpp.o -c /home/salar/development/active/tedit/src/editor/buffer/FileBufferSource.cpp",
+  "file": "/home/salar/development/active/tedit/src/editor/buffer/FileBufferSource.cpp",
+  "output": "CMakeFiles/tedit.dir/src/editor/buffer/FileBufferSource.cpp.o"
+},
+{
+  "directory": "/home/salar/development/active/tedit/build-asan",
+  "command": "/usr/bin/c++  -I/home/salar/development/active/tedit/src -I/home/salar/development/active/tedit/src/actions -I/home/salar/development/active/tedit/src/editor -I/home/salar/development/active/tedit/src/editor/buffer -I/home/salar/development/active/tedit/src/editor/command_line -I/home/salar/development/active/tedit/src/editor/modes -I/home/salar/development/active/tedit/src/platform -I/home/salar/development/active/tedit/src/platform/terminal -I/home/salar/development/active/tedit/src/rendering -fsanitize=address -fno-omit-frame-pointer -std=c++23 -Wall -Wextra -Wpedantic -Winvalid-pch -include /home/salar/development/active/tedit/build-asan/CMakeFiles/tedit.dir/cmake_pch.hxx -o CMakeFiles/tedit.dir/src/editor/buffer/TextBuffer.cpp.o -c /home/salar/development/active/tedit/src/editor/buffer/TextBuffer.cpp",
+  "file": "/home/salar/development/active/tedit/src/editor/buffer/TextBuffer.cpp",
+  "output": "CMakeFiles/tedit.dir/src/editor/buffer/TextBuffer.cpp.o"
+},
+{
+  "directory": "/home/salar/development/active/tedit/build-asan",
+  "command": "/usr/bin/c++  -I/home/salar/development/active/tedit/src -I/home/salar/development/active/tedit/src/actions -I/home/salar/development/active/tedit/src/editor -I/home/salar/development/active/tedit/src/editor/buffer -I/home/salar/development/active/tedit/src/editor/command_line -I/home/salar/development/active/tedit/src/editor/modes -I/home/salar/development/active/tedit/src/platform -I/home/salar/development/active/tedit/src/platform/terminal -I/home/salar/development/active/tedit/src/rendering -fsanitize=address -fno-omit-frame-pointer -std=c++23 -Wall -Wextra -Wpedantic -Winvalid-pch -include /home/salar/development/active/tedit/build-asan/CMakeFiles/tedit.dir/cmake_pch.hxx -o CMakeFiles/tedit.dir/src/editor/modes/CommandMode.cpp.o -c /home/salar/development/active/tedit/src/editor/modes/CommandMode.cpp",
+  "file": "/home/salar/development/active/tedit/src/editor/modes/CommandMode.cpp",
+  "output": "CMakeFiles/tedit.dir/src/editor/modes/CommandMode.cpp.o"
+},
+{
+  "directory": "/home/salar/development/active/tedit/build-asan",
+  "command": "/usr/bin/c++  -I/home/salar/development/active/tedit/src -I/home/salar/development/active/tedit/src/actions -I/home/salar/development/active/tedit/src/editor -I/home/salar/development/active/tedit/src/editor/buffer -I/home/salar/development/active/tedit/src/editor/command_line -I/home/salar/development/active/tedit/src/editor/modes -I/home/salar/development/active/tedit/src/platform -I/home/salar/development/active/tedit/src/platform/terminal -I/home/salar/development/active/tedit/src/rendering -fsanitize=address -fno-omit-frame-pointer -std=c++23 -Wall -Wextra -Wpedantic -Winvalid-pch -include /home/salar/development/active/tedit/build-asan/CMakeFiles/tedit.dir/cmake_pch.hxx -o CMakeFiles/tedit.dir/src/editor/modes/InsertMode.cpp.o -c /home/salar/development/active/tedit/src/editor/modes/InsertMode.cpp",
+  "file": "/home/salar/development/active/tedit/src/editor/modes/InsertMode.cpp",
+  "output": "CMakeFiles/tedit.dir/src/editor/modes/InsertMode.cpp.o"
+},
+{
+  "directory": "/home/salar/development/active/tedit/build-asan",
+  "command": "/usr/bin/c++  -I/home/salar/development/active/tedit/src -I/home/salar/development/active/tedit/src/actions -I/home/salar/development/active/tedit/src/editor -I/home/salar/development/active/tedit/src/editor/buffer -I/home/salar/development/active/tedit/src/editor/command_line -I/home/salar/development/active/tedit/src/editor/modes -I/home/salar/development/active/tedit/src/platform -I/home/salar/development/active/tedit/src/platform/terminal -I/home/salar/development/active/tedit/src/rendering -fsanitize=address -fno-omit-frame-pointer -std=c++23 -Wall -Wextra -Wpedantic -Winvalid-pch -include /home/salar/development/active/tedit/build-asan/CMakeFiles/tedit.dir/cmake_pch.hxx -o CMakeFiles/tedit.dir/src/editor/modes/Mode.cpp.o -c /home/salar/development/active/tedit/src/editor/modes/Mode.cpp",
+  "file": "/home/salar/development/active/tedit/src/editor/modes/Mode.cpp",
+  "output": "CMakeFiles/tedit.dir/src/editor/modes/Mode.cpp.o"
+},
+{
+  "directory": "/home/salar/development/active/tedit/build-asan",
+  "command": "/usr/bin/c++  -I/home/salar/development/active/tedit/src -I/home/salar/development/active/tedit/src/actions -I/home/salar/development/active/tedit/src/editor -I/home/salar/development/active/tedit/src/editor/buffer -I/home/salar/development/active/tedit/src/editor/command_line -I/home/salar/development/active/tedit/src/editor/modes -I/home/salar/development/active/tedit/src/platform -I/home/salar/development/active/tedit/src/platform/terminal -I/home/salar/development/active/tedit/src/rendering -fsanitize=address -fno-omit-frame-pointer -std=c++23 -Wall -Wextra -Wpedantic -Winvalid-pch -include /home/salar/development/active/tedit/build-asan/CMakeFiles/tedit.dir/cmake_pch.hxx -o CMakeFiles/tedit.dir/src/editor/modes/NormalMode.cpp.o -c /home/salar/development/active/tedit/src/editor/modes/NormalMode.cpp",
+  "file": "/home/salar/development/active/tedit/src/editor/modes/NormalMode.cpp",
+  "output": "CMakeFiles/tedit.dir/src/editor/modes/NormalMode.cpp.o"
+},
+{
+  "directory": "/home/salar/development/active/tedit/build-asan",
+  "command": "/usr/bin/c++  -I/home/salar/development/active/tedit/src -I/home/salar/development/active/tedit/src/actions -I/home/salar/development/active/tedit/src/editor -I/home/salar/development/active/tedit/src/editor/buffer -I/home/salar/development/active/tedit/src/editor/command_line -I/home/salar/development/active/tedit/src/editor/modes -I/home/salar/development/active/tedit/src/platform -I/home/salar/development/active/tedit/src/platform/terminal -I/home/salar/development/active/tedit/src/rendering -fsanitize=address -fno-omit-frame-pointer -std=c++23 -Wall -Wextra -Wpedantic -Winvalid-pch -include /home/salar/development/active/tedit/build-asan/CMakeFiles/tedit.dir/cmake_pch.hxx -o CMakeFiles/tedit.dir/src/platform/terminal/Terminal.cpp.o -c /home/salar/development/active/tedit/src/platform/terminal/Terminal.cpp",
+  "file": "/home/salar/development/active/tedit/src/platform/terminal/Terminal.cpp",
+  "output": "CMakeFiles/tedit.dir/src/platform/terminal/Terminal.cpp.o"
+},
+{
+  "directory": "/home/salar/development/active/tedit/build-asan",
+  "command": "/usr/bin/c++  -I/home/salar/development/active/tedit/src -I/home/salar/development/active/tedit/src/actions -I/home/salar/development/active/tedit/src/editor -I/home/salar/development/active/tedit/src/editor/buffer -I/home/salar/development/active/tedit/src/editor/command_line -I/home/salar/development/active/tedit/src/editor/modes -I/home/salar/development/active/tedit/src/platform -I/home/salar/development/active/tedit/src/platform/terminal -I/home/salar/development/active/tedit/src/rendering -fsanitize=address -fno-omit-frame-pointer -std=c++23 -Wall -Wextra -Wpedantic -Winvalid-pch -include /home/salar/development/active/tedit/build-asan/CMakeFiles/tedit.dir/cmake_pch.hxx -o CMakeFiles/tedit.dir/src/rendering/Renderer.cpp.o -c /home/salar/development/active/tedit/src/rendering/Renderer.cpp",
+  "file": "/home/salar/development/active/tedit/src/rendering/Renderer.cpp",
+  "output": "CMakeFiles/tedit.dir/src/rendering/Renderer.cpp.o"
+}
+]

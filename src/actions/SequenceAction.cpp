@@ -1,4 +1,4 @@
-#include "SequenceAction.h"
+#include "SequenceAction.hpp"
 
 namespace Tedit {
 

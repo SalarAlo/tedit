@@ -1,4 +1,4 @@
-#include "MoveDownAction.h"
+#include "MoveDownAction.hpp"
 
 namespace Tedit {
 

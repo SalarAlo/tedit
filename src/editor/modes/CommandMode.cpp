@@ -1,11 +1,11 @@
-#include "CommandMode.h"
+#include "CommandMode.hpp"
 
-#include "BackspaceAction.h"
-#include "ExecAndLeaveCommandMode.h"
-#include "InsertCharAction.h"
-#include "LeaveCommandMode.h"
-#include "MoveLeftAction.h"
-#include "MoveRightAction.h"
+#include "BackspaceAction.hpp"
+#include "ExecAndLeaveCommandMode.hpp"
+#include "InsertCharAction.hpp"
+#include "LeaveCommandMode.hpp"
+#include "MoveLeftAction.hpp"
+#include "MoveRightAction.hpp"
 
 namespace Tedit {
 

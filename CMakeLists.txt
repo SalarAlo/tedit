@@ -36,7 +36,7 @@ add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
 target_precompile_headers(${PROJECT_NAME}
     PRIVATE
-    ${SRC_DIR}/pch.h
+    ${SRC_DIR}/pch.hpp
 )
 
 target_include_directories(${PROJECT_NAME}

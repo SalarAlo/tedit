@@ -1,7 +1,7 @@
 #include <fstream>
 #include <stdexcept>
 
-#include "FileBufferSource.h"
+#include "FileBufferSource.hpp"
 
 namespace Tedit {
 
@@ -22,7 +22,7 @@ std::string FileBufferSource::read() {
 	std::ifstream file { m_file, std::ios::binary };
 
 	if (!file.is_open()) {
-		throw std::runtime_error("failed to open file.");
+		return "";
 	}
 
 	return std::string {
@@ -30,5 +30,7 @@ std::string FileBufferSource::read() {
 		std::istreambuf_iterator<char>(),
 	};
 }
+
+std::string FileBufferSource::get_buffer_name() { return m_file.filename(); }
 
 }

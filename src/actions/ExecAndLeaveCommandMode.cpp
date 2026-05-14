@@ -1,6 +1,6 @@
-#include "ExecAndLeaveCommandMode.h"
+#include "ExecAndLeaveCommandMode.hpp"
 
-#include "NormalMode.h"
+#include "NormalMode.hpp"
 
 namespace Tedit {
 

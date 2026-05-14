@@ -1,0 +1,7 @@
+{
+	"InstallScripts" : 
+	[
+		"/home/salar/development/active/tedit/build-asan/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

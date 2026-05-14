@@ -1,4 +1,4 @@
-#include "MoveUpAction.h"
+#include "MoveUpAction.hpp"
 
 namespace Tedit {
 

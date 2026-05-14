@@ -1,0 +1,3 @@
+/home/salar/development/active/tedit/build-asan/CMakeFiles/tedit.dir
+/home/salar/development/active/tedit/build-asan/CMakeFiles/edit_cache.dir
+/home/salar/development/active/tedit/build-asan/CMakeFiles/rebuild_cache.dir

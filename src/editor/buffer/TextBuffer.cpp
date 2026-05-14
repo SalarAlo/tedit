@@ -1,5 +1,5 @@
 
-#include "TextBuffer.h"
+#include "TextBuffer.hpp"
 
 namespace Tedit {
 
@@ -93,13 +93,15 @@ void TextBuffer::set_text(std::string_view txt) {
 }
 
 void TextBuffer::save() {
-		std::string output {};
+	std::string output {};
 
-		for (const auto& line : m_lines) {
-			output += line + '\n';
-		}
-
-		m_source->write(output);
+	for (const auto& line : m_lines) {
+		output += line + '\n';
 	}
+
+	m_source->write(output);
+}
+
+std::string TextBuffer::get_source_name() { return m_source->get_buffer_name(); }
 
 }

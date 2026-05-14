@@ -1,6 +1,6 @@
-#include "NewlineAction.h"
+#include "NewlineAction.hpp"
 
-#include "Editor.h"
+#include "Editor.hpp"
 
 namespace Tedit {
 

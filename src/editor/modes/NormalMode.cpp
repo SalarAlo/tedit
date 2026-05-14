@@ -1,21 +1,21 @@
 #include <memory>
 
-#include "NormalMode.h"
+#include "NormalMode.hpp"
 
-#include "ChangeToCommandMode.h"
-#include "ChangeToModeAction.h"
-#include "CommandLine.h"
-#include "DeleteCharAction.h"
-#include "InsertMode.h"
-#include "MoveEndLineAction.h"
-#include "MoveLineStartAction.h"
-#include "SequenceAction.h"
+#include "ChangeToCommandMode.hpp"
+#include "ChangeToModeAction.hpp"
+#include "CommandLine.hpp"
+#include "DeleteCharAction.hpp"
+#include "InsertMode.hpp"
+#include "MoveEndLineAction.hpp"
+#include "MoveLineStartAction.hpp"
+#include "SequenceAction.hpp"
 
-#include "actions/MoveDownAction.h"
-#include "actions/MoveLeftAction.h"
-#include "actions/MoveRightAction.h"
-#include "actions/MoveUpAction.h"
-#include "actions/NewlineAction.h"
+#include "actions/MoveDownAction.hpp"
+#include "actions/MoveLeftAction.hpp"
+#include "actions/MoveRightAction.hpp"
+#include "actions/MoveUpAction.hpp"
+#include "actions/NewlineAction.hpp"
 
 namespace Tedit {
 
@@ -56,6 +56,8 @@ std::unique_ptr<IAction> NormalMode::map_action(int key) {
 		return std::make_unique<MoveRightAction>();
 
 	case '0':
+		[[fallthrough]];
+	case '_':
 		return std::make_unique<MoveLineStartAction>();
 	case '$':
 		return std::make_unique<MoveEndLineAction>();

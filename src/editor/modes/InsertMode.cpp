@@ -1,14 +1,15 @@
-#include "InsertMode.h"
+#include "InsertMode.hpp"
 
-#include "BackspaceAction.h"
-#include "ChangeToModeAction.h"
-#include "InsertCharAction.h"
-#include "MoveDownAction.h"
-#include "MoveLeftAction.h"
-#include "MoveRightAction.h"
-#include "MoveUpAction.h"
-#include "NewlineAction.h"
-#include "NormalMode.h"
+#include "BackspaceAction.hpp"
+#include "ChangeToModeAction.hpp"
+#include "InsertCharAction.hpp"
+#include "MoveDownAction.hpp"
+#include "MoveLeftAction.hpp"
+#include "MoveRightAction.hpp"
+#include "MoveUpAction.hpp"
+#include "NewlineAction.hpp"
+#include "NormalMode.hpp"
+#include "SequenceAction.hpp"
 
 namespace Tedit {
 
@@ -34,11 +35,13 @@ std::unique_ptr<IAction> InsertMode::map_action(int key) {
 	case KEY_DOWN:
 		return std::make_unique<MoveDownAction>();
 	case 27:
-		return std::make_unique<ChangeToModeAction>(std::make_unique<NormalMode>());
+		return sequence(std::make_unique<MoveLeftAction>(), std::make_unique<ChangeToModeAction>(std::make_unique<NormalMode>()));
 
 	default:
 		return std::make_unique<InsertCharAction>(key);
 	}
 }
+
+CursorShape InsertMode::get_cursor_shape() { return CursorShape::Beam; }
 
 }

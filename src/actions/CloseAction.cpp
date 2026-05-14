@@ -1,4 +1,4 @@
-#include "CloseAction.h"
+#include "CloseAction.hpp"
 
 namespace Tedit {
 

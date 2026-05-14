@@ -1,8 +1,11 @@
 #include <curses.h>
 
-#include "Editor.h"
+#include "Editor.hpp"
 
-#include "NormalMode.h"
+#include "CommandLineParser.hpp"
+#include "NormalMode.hpp"
+#include "Renderer.hpp"
+#include "Terminal.hpp"
 
 namespace Tedit {
 
@@ -104,12 +107,21 @@ void Editor::move_right() {
 void Editor::move_up() {
 	m_cursor.row = std::max(m_cursor.row - 1, 0);
 	m_cursor.col = std::min(m_cursor.col, static_cast<int>(current_line().size()));
+
+	if (m_cursor.row < static_cast<int>(m_top_row)) {
+		m_top_row = static_cast<size_t>(m_cursor.row);
+	}
 }
 
 void Editor::move_down() {
 	int last_valid_index { static_cast<int>(m_buffer.line_count() - 1) };
 	m_cursor.row = std::min(m_cursor.row + 1, last_valid_index);
 	m_cursor.col = std::min(m_cursor.col, static_cast<int>(current_line().size()));
+
+	int visible_rows { std::max<int>(Terminal::get_instance().get_height() - Renderer::BELOW_HEIGHT, 1) };
+	if (m_cursor.row >= static_cast<int>(m_top_row) + visible_rows) {
+		m_top_row = static_cast<size_t>(m_cursor.row - visible_rows + 1);
+	}
 }
 
 std::string Editor::current_line() const {
@@ -121,7 +133,7 @@ void Editor::move_end_line() {
 }
 
 void Editor::change_mode(std::unique_ptr<Mode> mode) {
-
+	Terminal::get_instance().set_cursor_shape(mode->get_cursor_shape());
 	m_mode = std::move(mode);
 }
 
@@ -148,21 +160,29 @@ void Editor::deactivate_command_line() {
 }
 
 void Editor::parse_and_leave_cmd_line() {
-	auto result { CommandLineParser::parse(m_cmd_line.command) };
+	CommandLineParser parser { m_cmd_line.command };
+	auto result { parser.parse() };
+
 	deactivate_command_line();
 
 	if (result.has_value()) {
-		switch (*result) {
+		switch (result->type) {
 		case CommandType::Write:
 			save_to_buffer();
+			m_cmd_line.inactive_output = "written to \"" + m_buffer.get_source_name() + "\"";
 			break;
 		case CommandType::Quit:
 			m_should_close = true;
 			break;
-		}
-	}
 
-	m_cmd_line.inactive_output = result.error_or("");
+		case CommandType::Open:
+			m_buffer = TextBuffer { std::make_unique<FileBufferSource>(result->args[0]) };
+			m_cmd_line.inactive_output = "succesfully opened \"" + result->args[0] + "\"";
+			break;
+		}
+	} else {
+		m_cmd_line.inactive_output = result.error_or("");
+	}
 }
 
 void Editor::move_start_line() { m_cursor.col = 0; }

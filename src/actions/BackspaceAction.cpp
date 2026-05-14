@@ -1,4 +1,4 @@
-#include "BackspaceAction.h"
+#include "BackspaceAction.hpp"
 
 namespace Tedit {
 

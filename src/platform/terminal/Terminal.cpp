@@ -1,66 +1,64 @@
+#include <csignal>
+#include <cstdlib>
+#include <unistd.h>
+
+#include <atomic>
+#include <exception>
+
 #include "Terminal.hpp"
 
 #include "platform/terminal/CursorShape.hpp"
 
-#include <atomic>
-#include <csignal>
-#include <cstdlib>
-#include <exception>
-#include <unistd.h>
-
 namespace Tedit {
 
 namespace {
+	std::atomic<bool> g_terminal_active { false };
+	std::atomic<bool> g_terminal_restored { false };
+	std::atomic<bool> g_handlers_installed { false };
 
-std::atomic<bool> g_terminal_active { false };
-std::atomic<bool> g_terminal_restored { false };
-std::atomic<bool> g_handlers_installed { false };
+	void restore_terminal_state() {
+		if (!g_terminal_active.load()) {
+			return;
+		}
 
-void restore_terminal_state() {
-	if (!g_terminal_active.load()) {
-		return;
+		keypad(stdscr, false);
+		nocbreak();
+		echo();
+		curs_set(1);
+
+		static constexpr char reset_cursor[] = "\033[2 q";
+		[[maybe_unused]] const auto bytes_written = write(STDOUT_FILENO, reset_cursor, sizeof(reset_cursor) - 1);
+
+		reset_shell_mode();
+		endwin();
+
+		g_terminal_active.store(false);
 	}
 
-	keypad(stdscr, false);
-	nocbreak();
-	echo();
-	curs_set(1);
-
-	// Restore a standard block cursor even if we crash mid-render.
-	static constexpr char kResetCursor[] = "\033[2 q";
-	[[maybe_unused]] const auto bytes_written =
-		write(STDOUT_FILENO, kResetCursor, sizeof(kResetCursor) - 1);
-
-	reset_shell_mode();
-	endwin();
-
-	g_terminal_active.store(false);
-}
-
-void emergency_cleanup_and_exit(int signal_number) {
-	Terminal::emergency_restore();
-	std::signal(signal_number, SIG_DFL);
-	std::raise(signal_number);
-}
-
-void install_abort_handlers() {
-	if (g_handlers_installed.exchange(true)) {
-		return;
-	}
-
-	std::atexit([]() { Terminal::emergency_restore(); });
-	std::set_terminate([]() {
+	void emergency_cleanup_and_exit(int signal_number) {
 		Terminal::emergency_restore();
-		std::_Exit(EXIT_FAILURE);
-	});
+		std::signal(signal_number, SIG_DFL);
+		std::raise(signal_number);
+	}
 
-	std::signal(SIGABRT, emergency_cleanup_and_exit);
-	std::signal(SIGINT, emergency_cleanup_and_exit);
-	std::signal(SIGSEGV, emergency_cleanup_and_exit);
-	std::signal(SIGTERM, emergency_cleanup_and_exit);
-	std::signal(SIGILL, emergency_cleanup_and_exit);
-	std::signal(SIGFPE, emergency_cleanup_and_exit);
-}
+	void install_abort_handlers() {
+		if (g_handlers_installed.exchange(true)) {
+			return;
+		}
+
+		std::atexit([]() { Terminal::emergency_restore(); });
+		std::set_terminate([]() {
+			Terminal::emergency_restore();
+			std::_Exit(EXIT_FAILURE);
+		});
+
+		std::signal(SIGABRT, emergency_cleanup_and_exit);
+		std::signal(SIGINT, emergency_cleanup_and_exit);
+		std::signal(SIGSEGV, emergency_cleanup_and_exit);
+		std::signal(SIGTERM, emergency_cleanup_and_exit);
+		std::signal(SIGILL, emergency_cleanup_and_exit);
+		std::signal(SIGFPE, emergency_cleanup_and_exit);
+	}
 
 }
 

@@ -8,6 +8,7 @@ class InputHandler {
 public:
 	explicit InputHandler(Editor& editor);
 	void handle_key(int key);
+	size_t get_count() const;
 
 private:
 	Editor& m_editor;

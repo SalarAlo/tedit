@@ -29,4 +29,6 @@ void InputHandler::handle_key(int key) {
 	m_count = 0;
 }
 
+size_t InputHandler::get_count() const { return m_count; }
+
 }

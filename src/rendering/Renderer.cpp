@@ -69,9 +69,13 @@ void Renderer::draw_bar_below() {
 	auto cursor_str { m_editor->get_cursor().to_string() };
 	auto buffer_name_str { m_editor->m_buffer.get_source_name() };
 
+	auto current_count { std::to_string(m_editor->m_input_handler.get_count()) };
+
 	Terminal::get_instance().draw_text(bar_row, 0, mode_str);
 	Terminal::get_instance().draw_text(bar_row, mode_str.length() + spacing, buffer_name_str);
 	Terminal::get_instance().draw_text(bar_row, width - cursor_str.length() - spacing, cursor_str);
+	if (current_count != "0")
+		Terminal::get_instance().draw_text(bar_row + 1, width - spacing - current_count.length(), current_count);
 }
 
 void Renderer::draw_cmd_line() {

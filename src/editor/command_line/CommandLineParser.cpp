@@ -28,6 +28,12 @@ std::expected<ParsedCommand, std::string> CommandLineParser::parse() {
 		};
 	}
 
+	if (input_raw.cmd == "exp" || input_raw.cmd == "explorer") {
+		return ParsedCommand {
+			.type = CommandType::OpenExplorer,
+		};
+	}
+
 	if (input_raw.cmd == "o" || input_raw.cmd == "open") {
 		if (input_raw.args.size() < 1) {
 			return std::unexpected("open command requires one argument.");

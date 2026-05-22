@@ -11,6 +11,7 @@
 #include "InsertMode.hpp"
 #include "MoveEndLineAction.hpp"
 #include "MoveLineStartAction.hpp"
+#include "SelectAction.hpp"
 #include "SequenceAction.hpp"
 
 #include "actions/MoveDownAction.hpp"
@@ -72,6 +73,10 @@ std::unique_ptr<IAction> NormalMode::map_action(int key) {
 		return std::make_unique<MoveUpAction>();
 	case KEY_DOWN:
 		return std::make_unique<MoveDownAction>();
+	case KEY_ENTER:
+	case '\n':
+	case '\r':
+		return std::make_unique<SelectAction>();
 
 	case 'x':
 		return std::make_unique<DeleteCharAction>();
@@ -83,10 +88,6 @@ std::unique_ptr<IAction> NormalMode::map_action(int key) {
 
 	case CommandLine::COMMAND_LINE_KEY:
 		return std::make_unique<ChangeToCommandMode>();
-
-	case '\n':
-	case '\r':
-		return std::make_unique<MoveDownAction>();
 
 	case KEY_BACKSPACE:
 	case 127:

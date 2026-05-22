@@ -5,6 +5,8 @@ enum class CommandType {
 	Write,
 	Quit,
 	Open,
+	OpenExplorer,
+
 };
 
 }

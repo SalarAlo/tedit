@@ -74,6 +74,7 @@ void Renderer::draw_bar_below() {
 	Terminal::get_instance().draw_text(bar_row, 0, mode_str);
 	Terminal::get_instance().draw_text(bar_row, mode_str.length() + spacing, buffer_name_str);
 	Terminal::get_instance().draw_text(bar_row, width - cursor_str.length() - spacing, cursor_str);
+
 	if (current_count_str != "0")
 		Terminal::get_instance().draw_text(bar_row + 1, width - spacing - current_count_str.length(), current_count_str);
 }

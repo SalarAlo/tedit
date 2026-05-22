@@ -1,15 +1,17 @@
 #include <curses.h>
 
+#include <filesystem>
 #include <memory>
 
 #include "Editor.hpp"
 
 #include "CommandLineParser.hpp"
+#include "DirectoryBuffer.hpp"
 #include "IEditBuffer.hpp"
 #include "ISaveableBuffer.hpp"
+#include "ISelectableBuffer.hpp"
 #include "NormalMode.hpp"
 #include "Renderer.hpp"
-#include "SaveBufferAction.hpp"
 #include "Terminal.hpp"
 
 namespace Tedit {
@@ -182,7 +184,7 @@ void Editor::deactivate_command_line() {
 	m_cmd_line.is_active = false;
 }
 
-void Editor::parse_and_leave_cmd_line() {
+void Editor::exec_and_leave_cmd_line() {
 	CommandLineParser parser { m_cmd_line.command };
 	auto result { parser.parse() };
 
@@ -200,15 +202,20 @@ void Editor::parse_and_leave_cmd_line() {
 			m_should_close = true;
 			break;
 
-		case CommandType::Open:
+		case CommandType::Open: {
+			const auto& file_path_arg { result->args[0] };
+			open_path(file_path_arg);
+
+			m_cmd_line.inactive_output = "succesfully opened \"" + result->args[0] + "\"";
+			break;
+		}
+		case CommandType::OpenExplorer:
 			m_cursor.reset();
 			m_top_row = 0;
 			m_last_key = 0;
+			m_buffer = std::make_unique<DirectoryBuffer>(fs::current_path());
 
-			const auto& file_path_arg { result->args[0] };
-			m_buffer = std::make_unique<TextBuffer>(std::make_unique<FileBufferSource>(file_path_arg));
-
-			m_cmd_line.inactive_output = "succesfully opened \"" + result->args[0] + "\"";
+			m_cmd_line.inactive_output = "";
 			break;
 		}
 	} else {
@@ -219,5 +226,19 @@ void Editor::parse_and_leave_cmd_line() {
 void Editor::move_start_line() { m_cursor.col = 0; }
 
 Mode* Editor::get_mode() { return m_mode.get(); }
+
+void Editor::open_path(const fs::path& path) {
+	m_cursor.reset();
+	m_top_row = 0;
+	m_last_key = 0;
+	m_buffer = std::make_unique<TextBuffer>(std::make_unique<FileBufferSource>(path));
+}
+
+void Editor::select() {
+	auto buffer { get_buffer_type<ISelectableBuffer>() };
+
+	if (buffer)
+		buffer->select(*this);
+}
 
 }

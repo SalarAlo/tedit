@@ -3,10 +3,8 @@
 #include <concepts>
 #include <memory>
 
-#include "CommandLineParser.hpp"
 #include "Cursor.hpp"
 #include "IBuffer.hpp"
-#include "IEditBuffer.hpp"
 
 #include "buffer/FileBufferSource.hpp"
 #include "buffer/TextBuffer.hpp"
@@ -38,7 +36,8 @@ public:
 	void newline();
 	void insert_char(char c);
 
-	void parse_and_leave_cmd_line();
+	void exec_and_leave_cmd_line();
+	void select();
 
 	void move_left();
 	void move_right();
@@ -49,6 +48,8 @@ public:
 
 	void change_mode(std::unique_ptr<Mode> mode);
 	bool try_save_to_buffer();
+
+	void open_path(const fs::path& path);
 
 	Cursor& get_cursor();
 	Mode* get_mode();

@@ -1,9 +1,9 @@
 #pragma once
 
-#include "TextBufferSource.hpp"
+#include "IBufferSource.hpp"
 
 namespace Tedit {
-class FileBufferSource : public TextBufferSource {
+class FileBufferSource : public IBufferSource {
 public:
 	FileBufferSource(const fs::path& path);
 

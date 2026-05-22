@@ -1,9 +1,8 @@
-
 #include "TextBuffer.hpp"
 
 namespace Tedit {
 
-TextBuffer::TextBuffer(std::unique_ptr<TextBufferSource> src)
+TextBuffer::TextBuffer(std::unique_ptr<IBufferSource> src)
     : m_source(std::move(src)) {
 	set_text(m_source->read());
 
@@ -102,6 +101,8 @@ void TextBuffer::save() {
 	m_source->write(output);
 }
 
-std::string TextBuffer::get_source_name() { return m_source->get_buffer_name(); }
+std::string TextBuffer::get_name() const {
+	return m_source->get_buffer_name();
+}
 
 }

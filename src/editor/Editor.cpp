@@ -1,10 +1,15 @@
 #include <curses.h>
 
+#include <memory>
+
 #include "Editor.hpp"
 
 #include "CommandLineParser.hpp"
+#include "IEditBuffer.hpp"
+#include "ISaveableBuffer.hpp"
 #include "NormalMode.hpp"
 #include "Renderer.hpp"
+#include "SaveBufferAction.hpp"
 #include "Terminal.hpp"
 
 namespace Tedit {
@@ -28,18 +33,22 @@ void Editor::backspace() {
 		if (m_cursor.is_at_beginning())
 			return;
 
+		auto edit_buffer { get_buffer_type<IEditBuffer>() };
+		if (!edit_buffer)
+			return;
+
 		if (m_cursor.col == 0) {
-			auto deleted_row { m_buffer.line(m_cursor.row) };
-			m_buffer.erase_line(m_cursor.row);
+			auto deleted_row { m_buffer->line(m_cursor.row) };
+			edit_buffer->erase_line(m_cursor.row);
 			move_up();
-			m_buffer.append_to(m_cursor.row, deleted_row);
+			edit_buffer->append_to(m_cursor.row, deleted_row);
 			move_end_line();
 
 			return;
 		}
 
 		move_left();
-		m_buffer.erase_char(m_cursor.row, m_cursor.col);
+		edit_buffer->erase_char(m_cursor.row, m_cursor.col);
 	}
 }
 
@@ -47,18 +56,22 @@ void Editor::delete_char() {
 	if (m_cursor.is_at_beginning())
 		return;
 
+	auto edit_buffer { get_buffer_type<IEditBuffer>() };
+	if (!edit_buffer)
+		return;
+
 	if (m_cursor.col == 0) {
-		auto deleted_row { m_buffer.line(m_cursor.row) };
-		m_buffer.erase_line(m_cursor.row);
+		auto deleted_row { m_buffer->line(m_cursor.row) };
+		edit_buffer->erase_line(m_cursor.row);
 		move_up();
-		m_buffer.append_to(m_cursor.row, deleted_row);
+		edit_buffer->append_to(m_cursor.row, deleted_row);
 		move_end_line();
 
 		return;
 	}
 
 	move_left();
-	m_buffer.erase_char(m_cursor.row, m_cursor.col);
+	edit_buffer->erase_char(m_cursor.row, m_cursor.col);
 	move_right();
 }
 
@@ -66,7 +79,11 @@ void Editor::newline() {
 	if (m_cmd_line.is_active)
 		return;
 
-	m_buffer.insert_newline(m_cursor.row, m_cursor.col);
+	auto edit_buffer { get_buffer_type<IEditBuffer>() };
+	if (!edit_buffer)
+		return;
+
+	edit_buffer->insert_newline(m_cursor.row, m_cursor.col);
 	m_cursor.col = 0;
 	move_down();
 }
@@ -76,7 +93,11 @@ void Editor::insert_char(char c) {
 		m_cmd_line.command.insert(m_cmd_line.command.begin() + (m_cmd_line.cursor_col - 1), c);
 		m_cmd_line.cursor_col++;
 	} else {
-		m_buffer.insert_char(m_cursor.row, m_cursor.col, c);
+		auto edit_buffer { get_buffer_type<IEditBuffer>() };
+		if (!edit_buffer)
+			return;
+
+		edit_buffer->insert_char(m_cursor.row, m_cursor.col, c);
 		move_right();
 	}
 }
@@ -111,7 +132,7 @@ void Editor::move_up() {
 }
 
 void Editor::move_down() {
-	int last_valid_index { static_cast<int>(m_buffer.line_count() - 1) };
+	int last_valid_index { static_cast<int>(m_buffer->line_count() - 1) };
 	m_cursor.row = std::min(m_cursor.row + 1, last_valid_index);
 	m_cursor.col = std::min(m_cursor.col, static_cast<int>(current_line().size()));
 
@@ -122,7 +143,7 @@ void Editor::move_down() {
 }
 
 std::string Editor::current_line() const {
-	return std::string(m_buffer.line(m_cursor.row));
+	return std::string(m_buffer->line(m_cursor.row));
 }
 
 void Editor::move_end_line() {
@@ -138,8 +159,13 @@ bool Editor::should_close() const { return m_should_close; }
 
 void Editor::close() { m_should_close = true; }
 
-void Editor::save_to_buffer() {
-	m_buffer.save();
+bool Editor::try_save_to_buffer() {
+	auto save_buffer { get_buffer_type<ISaveableBuffer>() };
+	if (!save_buffer)
+		return false;
+
+	save_buffer->save();
+	return true;
 }
 
 Cursor& Editor::get_cursor() { return m_cursor; }
@@ -165,15 +191,23 @@ void Editor::parse_and_leave_cmd_line() {
 	if (result.has_value()) {
 		switch (result->type) {
 		case CommandType::Write:
-			save_to_buffer();
-			m_cmd_line.inactive_output = "written to \"" + m_buffer.get_source_name() + "\"";
+			if (try_save_to_buffer())
+				m_cmd_line.inactive_output = "saved buffer \"" + m_buffer->get_name() + "\"";
+			else
+				m_cmd_line.inactive_output = std::format("buffer is not saveable {}", m_buffer->get_name());
 			break;
 		case CommandType::Quit:
 			m_should_close = true;
 			break;
 
 		case CommandType::Open:
-			m_buffer = TextBuffer { std::make_unique<FileBufferSource>(result->args[0]) };
+			m_cursor.reset();
+			m_top_row = 0;
+			m_last_key = 0;
+
+			const auto& file_path_arg { result->args[0] };
+			m_buffer = std::make_unique<TextBuffer>(std::make_unique<FileBufferSource>(file_path_arg));
+
 			m_cmd_line.inactive_output = "succesfully opened \"" + result->args[0] + "\"";
 			break;
 		}

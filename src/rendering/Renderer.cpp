@@ -11,7 +11,7 @@ void Renderer::render(Editor& editor) {
 
 	Terminal::get_instance().clear();
 
-	auto length { std::to_string(m_editor->m_buffer.line_count()).size() };
+	auto length { std::to_string(m_editor->m_buffer->line_count()).size() };
 	size_t gutter_width { std::max<size_t>(3, length) };
 
 	draw_gutter(gutter_width, true);
@@ -32,7 +32,7 @@ void Renderer::render(Editor& editor) {
 }
 
 void Renderer::draw_gutter(size_t gutter_width, bool relative) {
-	int max_lines { std::min<int>(m_editor->m_top_row + Terminal::get_instance().get_height() - BELOW_HEIGHT, m_editor->m_buffer.line_count()) };
+	int max_lines { std::min<int>(m_editor->m_top_row + Terminal::get_instance().get_height() - BELOW_HEIGHT, m_editor->m_buffer->line_count()) };
 
 	for (int i = m_editor->m_top_row; i < max_lines; i++) {
 		bool is_current_line { i == m_editor->m_cursor.row };
@@ -49,10 +49,10 @@ void Renderer::draw_gutter(size_t gutter_width, bool relative) {
 
 void Renderer::draw_text(size_t gutter_width) {
 	int offset = gutter_width + 1;
-	int max_lines { std::min<int>(m_editor->m_top_row + Terminal::get_instance().get_height() - BELOW_HEIGHT, m_editor->m_buffer.line_count()) };
+	int max_lines { std::min<int>(m_editor->m_top_row + Terminal::get_instance().get_height() - BELOW_HEIGHT, m_editor->m_buffer->line_count()) };
 
 	for (int i = m_editor->m_top_row; i < max_lines; i++) {
-		std::string text = std::string(m_editor->m_buffer.line(i));
+		std::string text = std::string(m_editor->m_buffer->line(i));
 		int screen_row { i - static_cast<int>(m_editor->m_top_row) };
 
 		Terminal::get_instance().draw_text(screen_row, offset + static_cast<int>(INDENT), text);
@@ -63,19 +63,19 @@ void Renderer::draw_bar_below() {
 	auto [width, height] = Terminal::get_instance().get_terminal_dimensions();
 	auto bar_row { height - BELOW_HEIGHT };
 
-	const auto mode_str { "-- " + m_editor->m_mode->get_name() + " --" };
+	const std::string mode_str { std::format("-- {} --", m_editor->m_mode->get_name()) };
 	const size_t spacing { 2 };
 
 	auto cursor_str { m_editor->get_cursor().to_string() };
-	auto buffer_name_str { m_editor->m_buffer.get_source_name() };
+	auto buffer_name_str { m_editor->m_buffer->get_name() };
 
-	auto current_count { std::to_string(m_editor->m_input_handler.get_count()) };
+	auto current_count_str { std::to_string(m_editor->m_input_handler.get_count()) };
 
 	Terminal::get_instance().draw_text(bar_row, 0, mode_str);
 	Terminal::get_instance().draw_text(bar_row, mode_str.length() + spacing, buffer_name_str);
 	Terminal::get_instance().draw_text(bar_row, width - cursor_str.length() - spacing, cursor_str);
-	if (current_count != "0")
-		Terminal::get_instance().draw_text(bar_row + 1, width - spacing - current_count.length(), current_count);
+	if (current_count_str != "0")
+		Terminal::get_instance().draw_text(bar_row + 1, width - spacing - current_count_str.length(), current_count_str);
 }
 
 void Renderer::draw_cmd_line() {
@@ -98,5 +98,4 @@ std::string Renderer::format_line_number(int line, int width) {
 	oss << std::setw(width) << line;
 	return oss.str();
 }
-
 }

@@ -1,9 +1,12 @@
 #pragma once
 
+#include <concepts>
 #include <memory>
 
 #include "CommandLineParser.hpp"
 #include "Cursor.hpp"
+#include "IBuffer.hpp"
+#include "IEditBuffer.hpp"
 
 #include "buffer/FileBufferSource.hpp"
 #include "buffer/TextBuffer.hpp"
@@ -15,6 +18,9 @@
 #include "modes/Mode.hpp"
 
 namespace Tedit {
+
+template <typename T>
+concept buffer_type = std::derived_from<T, IBuffer>;
 
 class Editor {
 	friend class Renderer;
@@ -42,7 +48,7 @@ public:
 	void move_start_line();
 
 	void change_mode(std::unique_ptr<Mode> mode);
-	void save_to_buffer();
+	bool try_save_to_buffer();
 
 	Cursor& get_cursor();
 	Mode* get_mode();
@@ -51,10 +57,15 @@ public:
 	void deactivate_command_line();
 
 private:
+	template <buffer_type T>
+	T* get_buffer_type() {
+		return dynamic_cast<T*>(m_buffer.get());
+	}
+
 	std::string current_line() const;
 
 private:
-	TextBuffer m_buffer { std::make_unique<FileBufferSource>("./assets/file.txt") };
+	std::unique_ptr<IBuffer> m_buffer { std::make_unique<TextBuffer>(std::make_unique<FileBufferSource>("./assets/file.txt")) };
 	Cursor m_cursor {};
 	CommandLine m_cmd_line {};
 	std::unique_ptr<Mode> m_mode {};

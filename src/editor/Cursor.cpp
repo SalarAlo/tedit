@@ -12,4 +12,9 @@ bool Cursor::is_at_beginning() const {
 
 std::string Cursor::to_string() const { return std::to_string(row + 1) + ":" + std::to_string(col); }
 
+void Cursor::reset() {
+		row = 0;
+		col = 0;
+	}
+
 }

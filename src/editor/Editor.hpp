@@ -50,8 +50,9 @@ public:
 	bool try_save_to_buffer();
 
 	void open_path(const fs::path& path);
+	void open_buffer(std::unique_ptr<IBuffer> buffer);
 
-	Cursor& get_cursor();
+	IBuffer* get_active_buffer();
 	Mode* get_mode();
 
 	void activate_command_line();
@@ -67,7 +68,7 @@ private:
 
 private:
 	std::unique_ptr<IBuffer> m_buffer { std::make_unique<TextBuffer>(std::make_unique<FileBufferSource>("./assets/file.txt")) };
-	Cursor m_cursor {};
+	Cursor* m_cursor {};
 	CommandLine m_cmd_line {};
 	std::unique_ptr<Mode> m_mode {};
 	InputHandler m_input_handler { *this };

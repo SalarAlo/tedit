@@ -3,6 +3,7 @@
 #include "Renderer.hpp"
 
 #include "Terminal.hpp"
+#include "TextStyle.hpp"
 
 namespace Tedit {
 
@@ -24,8 +25,8 @@ void Renderer::render(Editor& editor) {
 		Terminal::get_instance().move_cursor(height - 1, m_editor->m_cmd_line.cursor_col);
 	} else {
 		size_t offset { gutter_width + INDENT + 1 };
-		int screen_row { m_editor->m_cursor.row - static_cast<int>(m_editor->m_top_row) };
-		Terminal::get_instance().move_cursor(screen_row, m_editor->m_cursor.col + static_cast<int>(offset));
+		int screen_row { m_editor->m_cursor->row - static_cast<int>(m_editor->m_top_row) };
+		Terminal::get_instance().move_cursor(screen_row, m_editor->m_cursor->col + static_cast<int>(offset));
 	}
 
 	Terminal::get_instance().present();
@@ -35,7 +36,7 @@ void Renderer::draw_gutter(size_t gutter_width, bool relative) {
 	int max_lines { std::min<int>(m_editor->m_top_row + Terminal::get_instance().get_height() - BELOW_HEIGHT, m_editor->m_buffer->line_count()) };
 
 	for (int i = m_editor->m_top_row; i < max_lines; i++) {
-		bool is_current_line { i == m_editor->m_cursor.row };
+		bool is_current_line { i == m_editor->m_cursor->row };
 		int line { relative ? make_relative(i) : i + 1 };
 		int screen_row { i - static_cast<int>(m_editor->m_top_row) };
 
@@ -43,7 +44,15 @@ void Renderer::draw_gutter(size_t gutter_width, bool relative) {
 		    line,
 		    gutter_width + (is_current_line ? 0 : INDENT));
 
+		auto row { m_editor->get_active_buffer()->get_cursor().row };
+
+		if (i == row)
+			Terminal::get_instance().enable_style(TextStyle::Bold);
+
 		Terminal::get_instance().draw_text(screen_row, 0, number);
+
+		if (i == row)
+			Terminal::get_instance().disable_style(TextStyle::Bold);
 	}
 }
 
@@ -66,7 +75,7 @@ void Renderer::draw_bar_below() {
 	const std::string mode_str { std::format("-- {} --", m_editor->m_mode->get_name()) };
 	const size_t spacing { 2 };
 
-	auto cursor_str { m_editor->get_cursor().to_string() };
+	auto cursor_str { m_editor->get_active_buffer()->get_cursor().to_string() };
 	auto buffer_name_str { m_editor->m_buffer->get_name() };
 
 	auto current_count_str { std::to_string(m_editor->m_input_handler.get_count()) };
@@ -88,10 +97,10 @@ void Renderer::draw_cmd_line() {
 }
 
 int Renderer::make_relative(int line) {
-	if (m_editor->m_cursor.row == line)
+	if (m_editor->m_cursor->row == line)
 		return line + 1;
 
-	return std::abs(m_editor->m_cursor.row - line);
+	return std::abs(m_editor->m_cursor->row - line);
 }
 
 std::string Renderer::format_line_number(int line, int width) {

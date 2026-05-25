@@ -145,4 +145,36 @@ int Terminal::get_width() { return get_terminal_dimensions().first; }
 
 int Terminal::get_height() { return get_terminal_dimensions().second; }
 
+void Terminal::enable_style(TextStyle style) {
+	switch (style) {
+	case TextStyle::Reverse:
+		attron(A_REVERSE);
+		break;
+
+	case TextStyle::Bold:
+		attron(A_BOLD);
+		break;
+
+	case TextStyle::Underline:
+		attron(A_UNDERLINE);
+		break;
+	}
+}
+
+void Terminal::disable_style(TextStyle style) {
+	switch (style) {
+	case TextStyle::Reverse:
+		attroff(A_REVERSE);
+		break;
+
+	case TextStyle::Bold:
+		attroff(A_BOLD);
+		break;
+
+	case TextStyle::Underline:
+		attroff(A_UNDERLINE);
+		break;
+	}
+}
+
 }

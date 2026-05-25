@@ -28,7 +28,6 @@ void DirectoryBuffer::apply_directory() {
 	m_lines.clear();
 
 	m_lines.emplace_back("../", m_directory.parent_path());
-	m_lines.emplace_back("./", m_directory);
 
 	for (const fs::path& child : fs::directory_iterator(m_directory)) {
 		auto display_name { child.filename().string() + (fs::is_directory(child) ? "/" : "") };
@@ -37,8 +36,10 @@ void DirectoryBuffer::apply_directory() {
 }
 
 void DirectoryBuffer::select(Editor& editor) {
-	const auto& path { m_lines[editor.get_cursor().row].file_path };
+	const auto& path { m_lines[m_cursor.row].file_path };
 	m_directory = path;
+
+	m_cursor.reset();
 
 	if (!fs::is_directory(m_directory)) {
 		editor.open_path(path);

@@ -8,8 +8,8 @@ MoveCursor::MoveCursor(int col, int row)
 }
 
 void MoveCursor::execute(Editor& e) {
-	e.get_cursor().row = m_row;
-	e.get_cursor().col = m_col;
+	e.get_active_buffer()->get_cursor().row = m_row;
+	e.get_active_buffer()->get_cursor().col = m_col;
 }
 
 }

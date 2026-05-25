@@ -1,5 +1,7 @@
 #pragma once
 
+#include "TextStyle.hpp"
+
 #include "platform/terminal/CursorShape.hpp"
 
 namespace Tedit {
@@ -26,6 +28,9 @@ public:
 	int get_height();
 
 	int read_key();
+	void enable_style(TextStyle style);
+
+	void disable_style(TextStyle style);
 
 private:
 	Terminal();

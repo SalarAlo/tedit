@@ -7,6 +7,8 @@
 
 #include "Terminal.hpp"
 
+#include "Cursor.hpp"
+
 #include "platform/terminal/CursorShape.hpp"
 
 namespace Tedit {
@@ -95,8 +97,8 @@ void Terminal::present() {
 	refresh();
 }
 
-void Terminal::draw_text(int row, int col, std::string_view text) {
-	mvaddnstr(row, col, text.data(), static_cast<int>(text.size()));
+void Terminal::draw_text(const DrawCall& call) {
+	mvaddnstr(call.row, call.col, call.text.data(), static_cast<int>(call.text.size()));
 }
 
 void Terminal::set_cursor_shape(CursorShape shape) {

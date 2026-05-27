@@ -11,8 +11,6 @@
 
 #include "command_line/CommandLine.hpp"
 
-#include "input/InputHandler.hpp"
-
 #include "modes/Mode.hpp"
 
 namespace Tedit {
@@ -53,10 +51,13 @@ public:
 	void open_buffer(std::unique_ptr<IBuffer> buffer);
 
 	IBuffer* get_active_buffer();
+	const IBuffer* get_active_buffer() const;
 	Mode* get_mode();
 
 	void activate_command_line();
 	void deactivate_command_line();
+
+	std::string current_line() const;
 
 private:
 	template <buffer_type T>
@@ -64,14 +65,11 @@ private:
 		return dynamic_cast<T*>(m_buffer.get());
 	}
 
-	std::string current_line() const;
-
 private:
 	std::unique_ptr<IBuffer> m_buffer { std::make_unique<TextBuffer>(std::make_unique<FileBufferSource>("./assets/file.txt")) };
 	Cursor* m_cursor {};
 	CommandLine m_cmd_line {};
 	std::unique_ptr<Mode> m_mode {};
-	InputHandler m_input_handler { *this };
 
 	int m_last_key {};
 	bool m_should_close { false };

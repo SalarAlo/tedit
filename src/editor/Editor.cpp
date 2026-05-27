@@ -22,7 +22,9 @@ Editor::Editor() {
 }
 
 void Editor::handle_key(int key) {
-	m_input_handler.handle_key(key);
+	auto action { get_mode()->map_action(key) };
+	if (action)
+		action->execute(*this);
 }
 
 void Editor::backspace() {
@@ -244,5 +246,6 @@ void Editor::select() {
 }
 
 IBuffer* Editor::get_active_buffer() { return m_buffer.get(); }
+const IBuffer* Editor::get_active_buffer() const { return m_buffer.get(); }
 
 }

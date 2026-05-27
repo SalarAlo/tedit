@@ -13,6 +13,7 @@ public:
 	virtual std::string get_name() const = 0;
 
 	Cursor& get_cursor();
+	const Cursor& get_cursor() const;
 
 protected:
 	Cursor m_cursor {};

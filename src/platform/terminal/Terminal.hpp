@@ -1,5 +1,6 @@
 #pragma once
 
+#include "DrawCall.hpp"
 #include "TextStyle.hpp"
 
 #include "platform/terminal/CursorShape.hpp"
@@ -18,7 +19,7 @@ public:
 	void clear();
 	void present();
 
-	void draw_text(int row, int col, std::string_view text);
+	void draw_text(const DrawCall& call);
 
 	void set_cursor_shape(CursorShape shape);
 	void move_cursor(int row, int col);

@@ -8,6 +8,7 @@ class Renderer {
 public:
 	constexpr static size_t INDENT { 1 };
 	constexpr static size_t BELOW_HEIGHT { 2 };
+	constexpr static int BELOW_BAR_SPACING_RIGHT { 2 };
 
 public:
 	void render(Editor& editor);

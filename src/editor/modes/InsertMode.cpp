@@ -3,13 +3,14 @@
 #include "BackspaceAction.hpp"
 #include "ChangeToModeAction.hpp"
 #include "InsertCharAction.hpp"
-#include "MoveDownAction.hpp"
-#include "MoveLeftAction.hpp"
-#include "MoveRightAction.hpp"
-#include "MoveUpAction.hpp"
+#include "MoveMotionAction.hpp"
 #include "NewlineAction.hpp"
 #include "NormalMode.hpp"
 #include "SequenceAction.hpp"
+#include "motions/DownMotion.h"
+#include "motions/LeftMotion.h"
+#include "motions/RightMotion.h"
+#include "motions/UpMotion.h"
 
 namespace Tedit {
 
@@ -27,15 +28,17 @@ std::unique_ptr<IAction> InsertMode::map_action(int key) {
 		return std::make_unique<NewlineAction>();
 
 	case KEY_LEFT:
-		return std::make_unique<MoveLeftAction>();
+		return std::make_unique<MoveMotionAction>(std::make_unique<LeftMotion>());
 	case KEY_RIGHT:
-		return std::make_unique<MoveRightAction>();
+		return std::make_unique<MoveMotionAction>(std::make_unique<RightMotion>());
 	case KEY_UP:
-		return std::make_unique<MoveUpAction>();
+		return std::make_unique<MoveMotionAction>(std::make_unique<UpMotion>());
 	case KEY_DOWN:
-		return std::make_unique<MoveDownAction>();
+		return std::make_unique<MoveMotionAction>(std::make_unique<DownMotion>());
 	case 27:
-		return sequence(std::make_unique<MoveLeftAction>(), std::make_unique<ChangeToModeAction>(std::make_unique<NormalMode>()));
+		return sequence(
+		    std::make_unique<MoveMotionAction>(std::make_unique<LeftMotion>()),
+		    std::make_unique<ChangeToModeAction>(std::make_unique<NormalMode>()));
 
 	default:
 		return std::make_unique<InsertCharAction>(key);

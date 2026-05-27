@@ -14,6 +14,7 @@ public:
 
 	Cursor& get_cursor();
 	const Cursor& get_cursor() const;
+	void set_cursor(const Cursor& cursor);
 
 protected:
 	Cursor m_cursor {};

@@ -6,7 +6,7 @@
 
 namespace Tedit {
 
-class DownMotion : public IMotion {
+class RightMotion : public IMotion {
 public:
 	MotionRange resolve(Editor& e) override;
 };

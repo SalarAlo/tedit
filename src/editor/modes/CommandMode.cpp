@@ -4,8 +4,9 @@
 #include "ExecAndLeaveCommandMode.hpp"
 #include "InsertCharAction.hpp"
 #include "LeaveCommandMode.hpp"
-#include "MoveLeftAction.hpp"
-#include "MoveRightAction.hpp"
+#include "MoveMotionAction.hpp"
+#include "motions/LeftMotion.h"
+#include "motions/RightMotion.h"
 
 namespace Tedit {
 
@@ -15,9 +16,9 @@ std::unique_ptr<IAction> CommandMode::map_action(int key) {
 		return std::make_unique<LeaveCommandMode>();
 
 	case KEY_LEFT:
-		return std::make_unique<MoveLeftAction>();
+		return std::make_unique<MoveMotionAction>(std::make_unique<LeftMotion>());
 	case KEY_RIGHT:
-		return std::make_unique<MoveRightAction>();
+		return std::make_unique<MoveMotionAction>(std::make_unique<RightMotion>());
 
 	case KEY_BACKSPACE:
 	case 127:

@@ -1,4 +1,4 @@
-#include "RightMotion.h"
+#include "RightMotion.hpp"
 
 namespace Tedit {
 

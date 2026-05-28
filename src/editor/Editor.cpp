@@ -7,6 +7,7 @@
 
 #include "CommandLineParser.hpp"
 #include "DirectoryBuffer.hpp"
+#include "FileBufferSource.hpp"
 #include "IEditBuffer.hpp"
 #include "ISaveableBuffer.hpp"
 #include "ISelectableBuffer.hpp"
@@ -28,12 +29,8 @@ void Editor::handle_key(int key) {
 }
 
 void Editor::backspace() {
-	if (m_cmd_line.is_active) {
-		if (m_cmd_line.cursor_col <= 1)
-			return;
-
-		m_cmd_line.command.erase(m_cmd_line.command.begin() + (m_cmd_line.cursor_col - 2));
-		m_cmd_line.cursor_col--;
+	if (m_cmd_line.is_active()) {
+		m_cmd_line.backspace();
 	} else {
 		if (m_cursor->is_at_beginning())
 			return;
@@ -58,30 +55,18 @@ void Editor::backspace() {
 }
 
 void Editor::delete_char() {
-	if (m_cursor->is_at_beginning())
-		return;
-
 	auto edit_buffer { get_buffer_type<IEditBuffer>() };
 	if (!edit_buffer)
 		return;
 
-	if (m_cursor->col == 0) {
-		auto deleted_row { m_buffer->line(m_cursor->row) };
-		edit_buffer->erase_line(m_cursor->row);
-		move_up();
-		edit_buffer->append_to(m_cursor->row, deleted_row);
-		move_end_line();
-
+	if (m_cursor->col >= static_cast<int>(current_line().size()))
 		return;
-	}
 
-	move_left();
 	edit_buffer->erase_char(m_cursor->row, m_cursor->col);
-	move_right();
 }
 
 void Editor::newline() {
-	if (m_cmd_line.is_active)
+	if (m_cmd_line.is_active())
 		return;
 
 	auto edit_buffer { get_buffer_type<IEditBuffer>() };
@@ -94,9 +79,8 @@ void Editor::newline() {
 }
 
 void Editor::insert_char(char c) {
-	if (m_cmd_line.is_active) {
-		m_cmd_line.command.insert(m_cmd_line.command.begin() + (m_cmd_line.cursor_col - 1), c);
-		m_cmd_line.cursor_col++;
+	if (m_cmd_line.is_active()) {
+		m_cmd_line.insert_char(c);
 	} else {
 		auto edit_buffer { get_buffer_type<IEditBuffer>() };
 		if (!edit_buffer)
@@ -108,8 +92,8 @@ void Editor::insert_char(char c) {
 }
 
 void Editor::move_left() {
-	if (m_cmd_line.is_active) {
-		m_cmd_line.cursor_col = std::max(m_cmd_line.cursor_col - 1, 1);
+	if (m_cmd_line.is_active()) {
+		m_cmd_line.move_left();
 		return;
 	}
 
@@ -117,9 +101,8 @@ void Editor::move_left() {
 }
 
 void Editor::move_right() {
-	if (m_cmd_line.is_active) {
-		int last_valid_column { static_cast<int>(m_cmd_line.command.size()) + 1 };
-		m_cmd_line.cursor_col = std::min(m_cmd_line.cursor_col + 1, last_valid_column);
+	if (m_cmd_line.is_active()) {
+		m_cmd_line.move_right();
 		return;
 	}
 
@@ -176,19 +159,15 @@ bool Editor::try_save_to_buffer() {
 }
 
 void Editor::activate_command_line() {
-	m_cmd_line.command = "";
-	m_cmd_line.cursor_col = 1;
-	m_cmd_line.is_active = true;
+	m_cmd_line.activate();
 }
 
 void Editor::deactivate_command_line() {
-	m_cmd_line.command = "";
-	m_cmd_line.cursor_col = 1;
-	m_cmd_line.is_active = false;
+	m_cmd_line.deactivate();
 }
 
 void Editor::exec_and_leave_cmd_line() {
-	CommandLineParser parser { m_cmd_line.command };
+	CommandLineParser parser { m_cmd_line.command() };
 	auto result { parser.parse() };
 
 	deactivate_command_line();
@@ -197,9 +176,9 @@ void Editor::exec_and_leave_cmd_line() {
 		switch (result->type) {
 		case CommandType::Write:
 			if (try_save_to_buffer())
-				m_cmd_line.inactive_output = "saved buffer \"" + m_buffer->get_name() + "\"";
+				m_cmd_line.set_inactive_output("saved buffer \"" + m_buffer->get_name() + "\"");
 			else
-				m_cmd_line.inactive_output = std::format("buffer is not saveable {}", m_buffer->get_name());
+				m_cmd_line.set_inactive_output(std::format("buffer is not saveable {}", m_buffer->get_name()));
 			break;
 		case CommandType::Quit:
 			m_should_close = true;
@@ -209,17 +188,17 @@ void Editor::exec_and_leave_cmd_line() {
 			const auto& file_path_arg { result->args[0] };
 			open_path(file_path_arg);
 
-			m_cmd_line.inactive_output = "succesfully opened \"" + result->args[0] + "\"";
+			m_cmd_line.set_inactive_output("succesfully opened \"" + result->args[0] + "\"");
 			break;
 		}
 		case CommandType::OpenExplorer:
 			open_buffer(std::make_unique<DirectoryBuffer>(fs::current_path()));
 
-			m_cmd_line.inactive_output = "";
+			m_cmd_line.set_inactive_output("");
 			break;
 		}
 	} else {
-		m_cmd_line.inactive_output = result.error_or("");
+		m_cmd_line.set_inactive_output(result.error_or(""));
 	}
 }
 

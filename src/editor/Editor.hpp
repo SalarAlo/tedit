@@ -1,17 +1,21 @@
 #pragma once
 
 #include <concepts>
+#include <filesystem>
 #include <memory>
+#include <string>
 
 #include "Cursor.hpp"
 #include "IBuffer.hpp"
+#include "MemoryBufferSource.hpp"
 
-#include "buffer/FileBufferSource.hpp"
 #include "buffer/TextBuffer.hpp"
 
-#include "command_line/CommandLine.hpp"
+#include "command_line/CommandLineController.hpp"
 
 #include "modes/Mode.hpp"
+
+namespace fs = std::filesystem;
 
 namespace Tedit {
 
@@ -66,9 +70,9 @@ private:
 	}
 
 private:
-	std::unique_ptr<IBuffer> m_buffer { std::make_unique<TextBuffer>(std::make_unique<FileBufferSource>("./assets/file.txt")) };
+	std::unique_ptr<IBuffer> m_buffer { std::make_unique<TextBuffer>(std::make_unique<MemoryBufferSource>()) };
 	Cursor* m_cursor {};
-	CommandLine m_cmd_line {};
+	CommandLineController m_cmd_line {};
 	std::unique_ptr<Mode> m_mode {};
 
 	int m_last_key {};

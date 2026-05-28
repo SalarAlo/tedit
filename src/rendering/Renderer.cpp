@@ -21,9 +21,9 @@ void Renderer::render(Editor& editor) {
 	draw_bar_below();
 	draw_cmd_line();
 
-	if (m_editor->m_cmd_line.is_active) {
+	if (m_editor->m_cmd_line.is_active()) {
 		auto [_, height] = Terminal::get_instance().get_terminal_dimensions();
-		Terminal::get_instance().move_cursor(height - 1, m_editor->m_cmd_line.cursor_col);
+		Terminal::get_instance().move_cursor(height - 1, m_editor->m_cmd_line.cursor_col());
 	} else {
 		size_t offset { gutter_width + INDENT + 1 };
 		int screen_row { m_editor->m_cursor->row - static_cast<int>(m_editor->m_top_row) };
@@ -106,8 +106,12 @@ void Renderer::draw_bar_below() {
 
 void Renderer::draw_cmd_line() {
 	auto [_, height] = Terminal::get_instance().get_terminal_dimensions();
-	auto is_active { m_editor->m_cmd_line.is_active };
-	auto cmd_line_str { is_active ? CommandLine::COMMAND_LINE_KEY + m_editor->m_cmd_line.command : m_editor->m_cmd_line.inactive_output };
+	auto is_active { m_editor->m_cmd_line.is_active() };
+	std::string cmd_line_str {
+		is_active
+		    ? CommandLineController::COMMAND_LINE_KEY + std::string(m_editor->m_cmd_line.command())
+		    : std::string(m_editor->m_cmd_line.inactive_output())
+	};
 
 	Terminal::get_instance().draw_text(DrawCall { height - 1, 0, cmd_line_str });
 }

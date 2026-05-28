@@ -6,7 +6,7 @@
 
 #include "modes/Mode.hpp"
 
-#include "motions/IMotion.h"
+#include "motions/IMotion.hpp"
 
 namespace Tedit {
 

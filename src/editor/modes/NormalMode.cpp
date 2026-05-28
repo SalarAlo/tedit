@@ -5,23 +5,24 @@
 
 #include "ChangeToCommandMode.hpp"
 #include "ChangeToModeAction.hpp"
-#include "CommandLine.hpp"
+#include "CommandLineController.hpp"
 #include "DeleteCharAction.hpp"
 #include "DeleteMotionAction.hpp"
 #include "EditOperator.hpp"
 #include "InsertMode.hpp"
+#include "LineMotion.hpp"
 #include "MoveMotionAction.hpp"
 #include "SelectAction.hpp"
 #include "SequenceAction.hpp"
 
 #include "actions/NewlineAction.hpp"
 
-#include "motions/DownMotion.h"
-#include "motions/LeftMotion.h"
-#include "motions/LineEndMotion.h"
-#include "motions/LineStartMotion.h"
-#include "motions/RightMotion.h"
-#include "motions/UpMotion.h"
+#include "motions/DownMotion.hpp"
+#include "motions/LeftMotion.hpp"
+#include "motions/LineEndMotion.hpp"
+#include "motions/LineStartMotion.hpp"
+#include "motions/RightMotion.hpp"
+#include "motions/UpMotion.hpp"
 
 namespace Tedit {
 
@@ -45,15 +46,15 @@ std::unique_ptr<IAction> NormalMode::map_action(int key) {
 		return nullptr;
 	}
 
-	if (is_operator_key(key)) {
-		m_pending_edit_operator = *m_operators.get(static_cast<char>(key));
-		return nullptr;
-	}
-
 	if (m_pending_edit_operator != EditOperator::None) {
 		auto action { get_operator_action(key) };
 		reset_state();
 		return action;
+	}
+
+	if (is_operator_key(key)) {
+		m_pending_edit_operator = *m_operators.get(static_cast<char>(key));
+		return nullptr;
 	}
 
 	auto action { map_key_action(key) };
@@ -116,7 +117,7 @@ std::unique_ptr<IAction> NormalMode::map_key_action(int key) {
 		    std::make_unique<DeleteCharAction>(),
 		    std::make_unique<ChangeToModeAction>(std::make_unique<InsertMode>()));
 
-	case CommandLine::COMMAND_LINE_KEY:
+	case CommandLineController::COMMAND_LINE_KEY:
 		return std::make_unique<ChangeToCommandMode>();
 
 	default:
@@ -159,11 +160,8 @@ std::unique_ptr<IMotion> NormalMode::map_motion(int key) {
 		return nullptr;
 	}
 }
-std::unique_ptr<IAction> NormalMode::map_operator_action(
-    EditOperator op,
-    std::unique_ptr<IMotion> motion) {
+std::unique_ptr<IAction> NormalMode::map_operator_action(EditOperator op, std::unique_ptr<IMotion> motion) {
 	switch (op) {
-
 	case EditOperator::Delete:
 		return std::make_unique<DeleteMotionAction>(std::move(motion));
 	case EditOperator::Change:
@@ -196,13 +194,21 @@ bool NormalMode::is_operator_key(int key) const {
 }
 
 void NormalMode::reset_state() {
-
 	m_count = 0;
 	m_pending_edit_operator = EditOperator::None;
 }
 
 std::unique_ptr<IAction> NormalMode::get_operator_action(int key) {
 	auto motion { map_motion(key) };
+
+	if (is_operator_key(key)) {
+		auto pressed_operator { *m_operators.get(static_cast<char>(key)) };
+
+		if (pressed_operator == m_pending_edit_operator) {
+
+			return map_operator_action(m_pending_edit_operator, std::make_unique<LineMotion>());
+		}
+	}
 
 	if (!motion)
 		return nullptr;

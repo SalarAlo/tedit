@@ -7,10 +7,10 @@
 #include "NewlineAction.hpp"
 #include "NormalMode.hpp"
 #include "SequenceAction.hpp"
-#include "motions/DownMotion.h"
-#include "motions/LeftMotion.h"
-#include "motions/RightMotion.h"
-#include "motions/UpMotion.h"
+#include "motions/DownMotion.hpp"
+#include "motions/LeftMotion.hpp"
+#include "motions/RightMotion.hpp"
+#include "motions/UpMotion.hpp"
 
 namespace Tedit {
 

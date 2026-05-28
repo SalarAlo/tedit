@@ -1,5 +1,10 @@
 #pragma once
 
+#include <memory>
+#include <string>
+#include <string_view>
+#include <vector>
+
 #include "IBufferSource.hpp"
 #include "IEditBuffer.hpp"
 #include "ISaveableBuffer.hpp"

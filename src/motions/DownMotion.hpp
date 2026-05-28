@@ -2,11 +2,11 @@
 
 #include <algorithm>
 
-#include "motions/IMotion.h"
+#include "motions/IMotion.hpp"
 
 namespace Tedit {
 
-class UpMotion : public IMotion {
+class DownMotion : public IMotion {
 public:
 	MotionRange resolve(Editor& e) override;
 };

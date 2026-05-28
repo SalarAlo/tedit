@@ -1,4 +1,4 @@
-#include "DownMotion.h"
+#include "DownMotion.hpp"
 
 namespace Tedit {
 

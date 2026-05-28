@@ -2,7 +2,7 @@
 
 #include <algorithm>
 
-#include "motions/IMotion.h"
+#include "motions/IMotion.hpp"
 
 namespace Tedit {
 

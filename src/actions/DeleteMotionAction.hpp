@@ -6,7 +6,7 @@
 
 #include "Action.hpp"
 #include "IEditBuffer.hpp"
-#include "IMotion.h"
+#include "IMotion.hpp"
 
 namespace Tedit {
 class DeleteMotionAction : public IAction {

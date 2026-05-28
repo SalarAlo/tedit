@@ -3,7 +3,7 @@
 #include <memory>
 
 #include "Action.hpp"
-#include "motions/IMotion.h"
+#include "motions/IMotion.hpp"
 
 namespace Tedit {
 

@@ -1,6 +1,13 @@
 #pragma once
 
+#include <filesystem>
+#include <string>
+#include <string_view>
+#include <vector>
+
 #include "ISelectableBuffer.hpp"
+
+namespace fs = std::filesystem;
 
 namespace Tedit {
 class DirectoryBuffer final : public ISelectableBuffer {

@@ -5,8 +5,8 @@
 #include "InsertCharAction.hpp"
 #include "LeaveCommandMode.hpp"
 #include "MoveMotionAction.hpp"
-#include "motions/LeftMotion.h"
-#include "motions/RightMotion.h"
+#include "motions/LeftMotion.hpp"
+#include "motions/RightMotion.hpp"
 
 namespace Tedit {
 

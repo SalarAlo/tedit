@@ -1,12 +1,10 @@
 #pragma once
 
-#include <algorithm>
-
-#include "motions/IMotion.h"
+#include "motions/IMotion.hpp"
 
 namespace Tedit {
 
-class DownMotion : public IMotion {
+class LineStartMotion : public IMotion {
 public:
 	MotionRange resolve(Editor& e) override;
 };

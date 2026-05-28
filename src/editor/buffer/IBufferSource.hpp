@@ -1,5 +1,8 @@
 #pragma once
 
+#include <string>
+#include <string_view>
+
 namespace Tedit {
 class IBufferSource {
 public:

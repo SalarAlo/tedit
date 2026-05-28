@@ -1,5 +1,8 @@
 #pragma once
 
+#include <string>
+#include <string_view>
+
 #include "Cursor.hpp"
 
 namespace Tedit {

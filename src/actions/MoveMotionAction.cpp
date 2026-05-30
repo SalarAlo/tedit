@@ -10,7 +10,7 @@ MoveMotionAction::MoveMotionAction(
 void MoveMotionAction::execute(Editor& editor) {
 	auto range = m_motion->resolve(editor);
 
-	editor.get_active_buffer()->set_cursor(range.end);
+	editor.set_cursor(range.end);
 }
 
 }

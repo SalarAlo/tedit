@@ -59,8 +59,19 @@ void Editor::delete_char() {
 	if (!edit_buffer)
 		return;
 
-	if (m_cursor->col >= static_cast<int>(current_line().size()))
+	auto line_size { static_cast<int>(current_line().size()) };
+	if (m_cursor->col > line_size)
 		return;
+
+	if (m_cursor->col == line_size) {
+		if (m_cursor->row >= m_buffer->line_count() - 1)
+			return;
+
+		auto next_line { m_buffer->line(m_cursor->row + 1) };
+		edit_buffer->append_to(m_cursor->row, next_line);
+		edit_buffer->erase_line(m_cursor->row + 1);
+		return;
+	}
 
 	edit_buffer->erase_char(m_cursor->row, m_cursor->col);
 }
@@ -114,9 +125,7 @@ void Editor::move_up() {
 	m_cursor->row = std::max(m_cursor->row - 1, 0);
 	m_cursor->col = std::min(m_cursor->col, static_cast<int>(current_line().size()));
 
-	if (m_cursor->row < static_cast<int>(m_top_row)) {
-		m_top_row = static_cast<size_t>(m_cursor->row);
-	}
+	ensure_cursor_visible();
 }
 
 void Editor::move_down() {
@@ -124,10 +133,24 @@ void Editor::move_down() {
 	m_cursor->row = std::min(m_cursor->row + 1, last_valid_index);
 	m_cursor->col = std::min(m_cursor->col, static_cast<int>(current_line().size()));
 
+	ensure_cursor_visible();
+}
+
+void Editor::ensure_cursor_visible() {
+	if (m_cursor->row < static_cast<int>(m_top_row)) {
+		m_top_row = static_cast<size_t>(m_cursor->row);
+		return;
+	}
+
 	int visible_rows { std::max<int>(Terminal::get_instance().get_height() - Renderer::BELOW_HEIGHT, 1) };
 	if (m_cursor->row >= static_cast<int>(m_top_row) + visible_rows) {
 		m_top_row = static_cast<size_t>(m_cursor->row - visible_rows + 1);
 	}
+}
+
+void Editor::set_cursor(const Cursor& cursor) {
+	m_buffer->set_cursor(cursor);
+	ensure_cursor_visible();
 }
 
 std::string Editor::current_line() const {
@@ -180,7 +203,7 @@ void Editor::exec_and_leave_cmd_line() {
 			else
 				m_cmd_line.set_inactive_output(std::format("buffer is not saveable {}", m_buffer->get_name()));
 			break;
-		case CommandType::Quit:
+		case CommandType::QuitCurrentBuffer:
 			m_should_close = true;
 			break;
 

@@ -3,7 +3,7 @@
 namespace Tedit {
 enum class CommandType {
 	Write,
-	Quit,
+	QuitCurrentBuffer,
 	Open,
 	OpenExplorer,
 

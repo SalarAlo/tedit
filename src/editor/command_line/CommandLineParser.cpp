@@ -1,5 +1,3 @@
-#include <stdexcept>
-
 #include "CommandLineParser.hpp"
 
 namespace Tedit {
@@ -24,7 +22,7 @@ std::expected<ParsedCommand, std::string> CommandLineParser::parse() {
 
 	if (input_raw.cmd == "q" || input_raw.cmd == "quit") {
 		return ParsedCommand {
-			.type = CommandType::Quit,
+			.type = CommandType::QuitCurrentBuffer,
 		};
 	}
 

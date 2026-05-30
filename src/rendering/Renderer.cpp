@@ -13,7 +13,7 @@ void Renderer::render(Editor& editor) {
 
 	Terminal::get_instance().clear();
 
-	auto length { std::to_string(m_editor->m_buffer->line_count()).size() };
+	auto length { std::to_string(m_editor->get_active_buffer()->line_count()).size() };
 	size_t gutter_width { std::max<size_t>(3, length) };
 
 	draw_gutter(gutter_width, true);
@@ -34,7 +34,7 @@ void Renderer::render(Editor& editor) {
 }
 
 void Renderer::draw_gutter(size_t gutter_width, bool relative) {
-	int max_lines { std::min<int>(m_editor->m_top_row + Terminal::get_instance().get_height() - BELOW_HEIGHT, m_editor->m_buffer->line_count()) };
+	int max_lines { std::min<int>(m_editor->m_top_row + Terminal::get_instance().get_height() - BELOW_HEIGHT, m_editor->get_active_buffer()->line_count()) };
 
 	for (int i = m_editor->m_top_row; i < max_lines; i++) {
 		bool is_current_line { i == m_editor->m_cursor->row };
@@ -60,10 +60,10 @@ void Renderer::draw_gutter(size_t gutter_width, bool relative) {
 
 void Renderer::draw_text(size_t gutter_width) {
 	int offset = gutter_width + 1;
-	int max_lines { std::min<int>(m_editor->m_top_row + Terminal::get_instance().get_height() - BELOW_HEIGHT, m_editor->m_buffer->line_count()) };
+	int max_lines { std::min<int>(m_editor->m_top_row + Terminal::get_instance().get_height() - BELOW_HEIGHT, m_editor->get_active_buffer()->line_count()) };
 
 	for (int i = m_editor->m_top_row; i < max_lines; i++) {
-		std::string text = std::string(m_editor->m_buffer->line(i));
+		std::string text = std::string(m_editor->get_active_buffer()->line(i));
 		int screen_row { i - static_cast<int>(m_editor->m_top_row) };
 
 		DrawCall draw_line { screen_row, offset + static_cast<int>(INDENT), text };
@@ -78,7 +78,7 @@ void Renderer::draw_bar_below() {
 	const std::string mode_str { std::format("-- {} --", m_editor->m_mode->get_name()) };
 
 	auto cursor_str { m_editor->get_active_buffer()->get_cursor().to_string() };
-	auto buffer_name_str { m_editor->m_buffer->get_name() };
+	auto buffer_name_str { m_editor->get_active_buffer()->get_name() };
 
 	DrawCall draw_mode { bar_row, 0, mode_str };
 	DrawCall draw_buffer_name { bar_row, static_cast<int>(mode_str.length() + BELOW_BAR_SPACING_RIGHT), buffer_name_str };

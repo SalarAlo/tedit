@@ -62,8 +62,11 @@ public:
 	void deactivate_command_line();
 
 	std::string current_line() const;
+	void set_cursor(const Cursor& cursor);
 
 private:
+	void ensure_cursor_visible();
+
 	template <buffer_type T>
 	T* get_buffer_type() {
 		return dynamic_cast<T*>(m_buffer.get());

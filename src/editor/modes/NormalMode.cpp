@@ -180,13 +180,13 @@ std::string NormalMode::get_mode_details() {
 		mode_details.clear();
 
 	if (m_pending_edit_operator != EditOperator::None)
-		mode_details += m_operators.get(m_pending_edit_operator);
+		mode_details += *m_operators.get(m_pending_edit_operator);
 
 	return mode_details;
 }
 
 bool NormalMode::is_count_key(int key) const {
-	return key >= '1' && key <= '9';
+	return (m_count != 0 && key >= '0' && key <= '9') || (key >= '1' && key <= '9');
 }
 
 bool NormalMode::is_operator_key(int key) const {

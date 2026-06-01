@@ -35,6 +35,9 @@ public:
 
 	void disable_style(TextStyle style);
 
+	void set_fg(uint8_t r, uint8_t g, uint8_t b);
+	void reset_style();
+
 private:
 	Terminal();
 };

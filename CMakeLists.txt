@@ -15,6 +15,15 @@ include(FetchContent)
 
 find_package(Curses REQUIRED)
 
+# Tree-sitter
+
+add_subdirectory(vendor/tree_sitter_cpp EXCLUDE_FROM_ALL)
+
+target_include_directories(tree-sitter-cpp
+    PUBLIC
+    ${CMAKE_SOURCE_DIR}/vendor/tree_sitter_cpp/bindings/c
+)
+
 # Catch2
 
 FetchContent_Declare(
@@ -73,6 +82,7 @@ target_include_directories(tedit_core
 target_link_libraries(tedit_core
     PUBLIC
     ${CURSES_LIBRARIES}
+    tree-sitter-cpp
 )
 
 # Main executable

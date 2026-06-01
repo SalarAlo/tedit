@@ -14,6 +14,7 @@
 #include "MoveMotionAction.hpp"
 #include "SelectAction.hpp"
 #include "SequenceAction.hpp"
+#include "SwitchTabAction.hpp"
 
 #include "actions/NewlineAction.hpp"
 
@@ -108,6 +109,9 @@ std::unique_ptr<IAction> NormalMode::map_key_action(int key) {
 	case '\n':
 	case '\r':
 		return std::make_unique<SelectAction>();
+
+	case '\t':
+		return std::make_unique<SwitchTabAction>();
 
 	case 'x':
 		return std::make_unique<DeleteCharAction>();

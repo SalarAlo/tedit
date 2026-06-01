@@ -24,7 +24,7 @@ TEST_CASE("CommandLineParser parses quit aliases") {
 		auto parsed { parser.parse() };
 
 		REQUIRE(parsed.has_value());
-		REQUIRE(parsed->type == Tedit::CommandType::QuitCurrentBuffer);
+		REQUIRE(parsed->type == Tedit::CommandType::Quit);
 	}
 }
 

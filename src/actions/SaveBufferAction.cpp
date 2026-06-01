@@ -2,6 +2,6 @@
 
 namespace Tedit {
 
-void SaveBufferAction::execute(Editor& e) { e.try_save_to_buffer(); }
+void SaveBufferAction::execute(Editor& e) { e.save_buffer(); }
 
 }

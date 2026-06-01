@@ -1,7 +1,11 @@
 #include <csignal>
+#include <cstdio>
 #include <cstdlib>
+#include <cstring>
+#include <curses.h>
 #include <unistd.h>
 
+#include <array>
 #include <atomic>
 #include <exception>
 
@@ -62,6 +66,19 @@ namespace {
 		std::signal(SIGFPE, emergency_cleanup_and_exit);
 	}
 
+	void write_escape(const char* sequence) {
+		[[maybe_unused]] const auto bytes_written = write(STDOUT_FILENO, sequence, std::strlen(sequence));
+	}
+
+	void write_formatted_escape(const char* format, int first, int second = 0, int third = 0) {
+		std::array<char, 64> buffer {};
+		int length { std::snprintf(buffer.data(), buffer.size(), format, first, second, third) };
+		if (length <= 0)
+			return;
+
+		[[maybe_unused]] const auto bytes_written = write(STDOUT_FILENO, buffer.data(), static_cast<size_t>(length));
+	}
+
 }
 
 Terminal::Terminal() {
@@ -74,7 +91,10 @@ Terminal::Terminal() {
 	cbreak();
 	noecho();
 	keypad(stdscr, true);
+	start_color();
+
 	g_terminal_active.store(true);
+	::refresh();
 }
 
 Terminal::~Terminal() {
@@ -90,41 +110,47 @@ void Terminal::emergency_restore() {
 }
 
 void Terminal::clear() {
-	::clear();
+	write_escape("\033[2J\033[H");
 }
 
 void Terminal::present() {
-	refresh();
 }
 
 void Terminal::draw_text(const DrawCall& call) {
-	mvaddnstr(call.row, call.col, call.text.data(), static_cast<int>(call.text.size()));
+	if (call.color) {
+		auto [r, g, b] = *call.color;
+		Terminal::get_instance().set_fg(r, g, b);
+	}
+
+	move_cursor(call.row, call.col);
+	write(STDOUT_FILENO, call.text.data(), call.text.size());
+
+	if (call.color)
+		reset_style();
 }
 
 void Terminal::set_cursor_shape(CursorShape shape) {
 	switch (shape) {
 	case CursorShape::Block:
-		printf("\033[2 q");
+		write_escape("\033[2 q");
 		break;
 
 	case CursorShape::Beam:
-		printf("\033[6 q");
+		write_escape("\033[6 q");
 		break;
 
 	case CursorShape::Underline:
-		printf("\033[4 q");
+		write_escape("\033[4 q");
 		break;
 
 	case CursorShape::Hidden:
-		curs_set(0);
+		write_escape("\033[?25l");
 		return;
 	}
-
-	fflush(stdout);
 }
 
 void Terminal::move_cursor(int row, int col) {
-	move(row, col);
+	write_formatted_escape("\033[%d;%dH", row + 1, col + 1);
 }
 
 int Terminal::read_key() {
@@ -150,15 +176,15 @@ int Terminal::get_height() { return get_terminal_dimensions().second; }
 void Terminal::enable_style(TextStyle style) {
 	switch (style) {
 	case TextStyle::Reverse:
-		attron(A_REVERSE);
+		write_escape("\033[7m");
 		break;
 
 	case TextStyle::Bold:
-		attron(A_BOLD);
+		write_escape("\033[1m");
 		break;
 
 	case TextStyle::Underline:
-		attron(A_UNDERLINE);
+		write_escape("\033[4m");
 		break;
 	}
 }
@@ -166,17 +192,25 @@ void Terminal::enable_style(TextStyle style) {
 void Terminal::disable_style(TextStyle style) {
 	switch (style) {
 	case TextStyle::Reverse:
-		attroff(A_REVERSE);
+		write_escape("\033[27m");
 		break;
 
 	case TextStyle::Bold:
-		attroff(A_BOLD);
+		write_escape("\033[22m");
 		break;
 
 	case TextStyle::Underline:
-		attroff(A_UNDERLINE);
+		write_escape("\033[24m");
 		break;
 	}
+}
+
+void Terminal::set_fg(uint8_t r, uint8_t g, uint8_t b) {
+	write_formatted_escape("\033[38;2;%d;%d;%dm", r, g, b);
+}
+
+void Terminal::reset_style() {
+	write_escape("\033[0m");
 }
 
 }

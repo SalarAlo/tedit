@@ -7,8 +7,8 @@ TEST_CASE("Insert character into empty buffer") {
 
 	editor.insert_char('a');
 
-	REQUIRE(editor.get_active_buffer()->line(0) == "a");
-	REQUIRE(editor.get_active_buffer()->line_count() == 1uz);
+	REQUIRE(editor.get_buffer()->line(0) == "a");
+	REQUIRE(editor.get_buffer()->line_count() == 1uz);
 }
 
 TEST_CASE("Insert multiple characters") {
@@ -18,8 +18,8 @@ TEST_CASE("Insert multiple characters") {
 	editor.insert_char('b');
 	editor.insert_char('c');
 
-	REQUIRE(editor.get_active_buffer()->line(0) == "abc");
-	REQUIRE(editor.get_active_buffer()->line_count() == 1uz);
+	REQUIRE(editor.get_buffer()->line(0) == "abc");
+	REQUIRE(editor.get_buffer()->line_count() == 1uz);
 }
 
 TEST_CASE("Insert character in middle of line") {
@@ -31,7 +31,7 @@ TEST_CASE("Insert character in middle of line") {
 	editor.move_left();
 	editor.insert_char('b');
 
-	REQUIRE(editor.get_active_buffer()->line(0) == "abc");
+	REQUIRE(editor.get_buffer()->line(0) == "abc");
 }
 
 TEST_CASE("Backspace removes previous character") {
@@ -43,7 +43,7 @@ TEST_CASE("Backspace removes previous character") {
 
 	editor.backspace();
 
-	REQUIRE(editor.get_active_buffer()->line(0) == "ab");
+	REQUIRE(editor.get_buffer()->line(0) == "ab");
 }
 
 TEST_CASE("Backspace in middle of line") {
@@ -57,7 +57,7 @@ TEST_CASE("Backspace in middle of line") {
 
 	editor.backspace();
 
-	REQUIRE(editor.get_active_buffer()->line(0) == "ac");
+	REQUIRE(editor.get_buffer()->line(0) == "ac");
 }
 
 TEST_CASE("Backspace at beginning does nothing") {
@@ -68,7 +68,7 @@ TEST_CASE("Backspace at beginning does nothing") {
 	editor.move_left();
 	editor.backspace();
 
-	REQUIRE(editor.get_active_buffer()->line(0) == "a");
+	REQUIRE(editor.get_buffer()->line(0) == "a");
 }
 
 TEST_CASE("Delete removes character under cursor") {
@@ -83,7 +83,7 @@ TEST_CASE("Delete removes character under cursor") {
 
 	editor.delete_char();
 
-	REQUIRE(editor.get_active_buffer()->line(0) == "ac");
+	REQUIRE(editor.get_buffer()->line(0) == "ac");
 }
 
 TEST_CASE("Delete at end of line does nothing") {
@@ -94,7 +94,7 @@ TEST_CASE("Delete at end of line does nothing") {
 
 	editor.delete_char();
 
-	REQUIRE(editor.get_active_buffer()->line(0) == "ab");
+	REQUIRE(editor.get_buffer()->line(0) == "ab");
 }
 
 TEST_CASE("Newline creates new empty line") {
@@ -105,9 +105,9 @@ TEST_CASE("Newline creates new empty line") {
 
 	editor.newline();
 
-	REQUIRE(editor.get_active_buffer()->line_count() == 2uz);
-	REQUIRE(editor.get_active_buffer()->line(0) == "ab");
-	REQUIRE(editor.get_active_buffer()->line(1) == "");
+	REQUIRE(editor.get_buffer()->line_count() == 2uz);
+	REQUIRE(editor.get_buffer()->line(0) == "ab");
+	REQUIRE(editor.get_buffer()->line(1) == "");
 }
 
 TEST_CASE("Newline splits line in middle") {
@@ -123,10 +123,10 @@ TEST_CASE("Newline splits line in middle") {
 
 	editor.newline();
 
-	REQUIRE(editor.get_active_buffer()->line_count() == 2uz);
+	REQUIRE(editor.get_buffer()->line_count() == 2uz);
 
-	REQUIRE(editor.get_active_buffer()->line(0) == "ab");
-	REQUIRE(editor.get_active_buffer()->line(1) == "cd");
+	REQUIRE(editor.get_buffer()->line(0) == "ab");
+	REQUIRE(editor.get_buffer()->line(1) == "cd");
 }
 
 TEST_CASE("Backspace joins lines") {
@@ -145,8 +145,8 @@ TEST_CASE("Backspace joins lines") {
 
 	editor.backspace();
 
-	REQUIRE(editor.get_active_buffer()->line_count() == 1uz);
-	REQUIRE(editor.get_active_buffer()->line(0) == "ab");
+	REQUIRE(editor.get_buffer()->line_count() == 1uz);
+	REQUIRE(editor.get_buffer()->line(0) == "ab");
 }
 
 TEST_CASE("Delete joins lines") {
@@ -165,8 +165,8 @@ TEST_CASE("Delete joins lines") {
 
 	editor.delete_char();
 
-	REQUIRE(editor.get_active_buffer()->line_count() == 1uz);
-	REQUIRE(editor.get_active_buffer()->line(0) == "abcd");
+	REQUIRE(editor.get_buffer()->line_count() == 1uz);
+	REQUIRE(editor.get_buffer()->line(0) == "abcd");
 }
 
 TEST_CASE("Move left stops at beginning") {
@@ -178,7 +178,7 @@ TEST_CASE("Move left stops at beginning") {
 	editor.move_left();
 	editor.insert_char('b');
 
-	REQUIRE(editor.get_active_buffer()->line(0) == "ba");
+	REQUIRE(editor.get_buffer()->line(0) == "ba");
 }
 
 TEST_CASE("Move right stops at end") {
@@ -192,7 +192,7 @@ TEST_CASE("Move right stops at end") {
 
 	editor.insert_char('b');
 
-	REQUIRE(editor.get_active_buffer()->line(0) == "ab");
+	REQUIRE(editor.get_buffer()->line(0) == "ab");
 }
 
 TEST_CASE("Move up and down between lines") {
@@ -205,8 +205,8 @@ TEST_CASE("Move up and down between lines") {
 	editor.move_up();
 	editor.insert_char('x');
 
-	REQUIRE(editor.get_active_buffer()->line(0) == "ax");
-	REQUIRE(editor.get_active_buffer()->line(1) == "b");
+	REQUIRE(editor.get_buffer()->line(0) == "ax");
+	REQUIRE(editor.get_buffer()->line(1) == "b");
 }
 
 TEST_CASE("Move to start of line") {
@@ -219,7 +219,7 @@ TEST_CASE("Move to start of line") {
 	editor.move_start_line();
 	editor.insert_char('x');
 
-	REQUIRE(editor.get_active_buffer()->line(0) == "xabc");
+	REQUIRE(editor.get_buffer()->line(0) == "xabc");
 }
 
 TEST_CASE("Move to end of line") {
@@ -233,7 +233,7 @@ TEST_CASE("Move to end of line") {
 
 	editor.insert_char('c');
 
-	REQUIRE(editor.get_active_buffer()->line(0) == "abc");
+	REQUIRE(editor.get_buffer()->line(0) == "abc");
 }
 
 TEST_CASE("Multiple newlines create multiple lines") {
@@ -246,11 +246,11 @@ TEST_CASE("Multiple newlines create multiple lines") {
 
 	editor.insert_char('b');
 
-	REQUIRE(editor.get_active_buffer()->line_count() == 3uz);
+	REQUIRE(editor.get_buffer()->line_count() == 3uz);
 
-	REQUIRE(editor.get_active_buffer()->line(0) == "a");
-	REQUIRE(editor.get_active_buffer()->line(1) == "");
-	REQUIRE(editor.get_active_buffer()->line(2) == "b");
+	REQUIRE(editor.get_buffer()->line(0) == "a");
+	REQUIRE(editor.get_buffer()->line(1) == "");
+	REQUIRE(editor.get_buffer()->line(2) == "b");
 }
 
 TEST_CASE("Complex editing session") {
@@ -275,8 +275,8 @@ TEST_CASE("Complex editing session") {
 
 	editor.insert_char('!');
 
-	REQUIRE(editor.get_active_buffer()->line_count() == 2uz);
+	REQUIRE(editor.get_buffer()->line_count() == 2uz);
 
-	REQUIRE(editor.get_active_buffer()->line(0) == "hello!");
-	REQUIRE(editor.get_active_buffer()->line(1) == "world");
+	REQUIRE(editor.get_buffer()->line(0) == "hello!");
+	REQUIRE(editor.get_buffer()->line(1) == "world");
 }

@@ -15,7 +15,7 @@ public:
 	    : m_motion(std::move(motion)) { }
 
 	void execute(Editor& e) override {
-		auto* buffer { dynamic_cast<IEditBuffer*>(e.get_active_buffer()) };
+		auto* buffer { dynamic_cast<IEditBuffer*>(e.get_buffer()) };
 		if (!buffer)
 			return;
 

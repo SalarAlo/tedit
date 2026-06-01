@@ -33,7 +33,7 @@ void fill_editor_with_lines(Tedit::Editor& editor) {
 TEST_CASE("Horizontal motions clamp within the current line") {
 	Tedit::Editor editor {};
 	fill_editor_with_lines(editor);
-	editor.get_active_buffer()->set_cursor({ .row = 0, .col = 0 });
+	editor.get_buffer()->set_cursor({ .row = 0, .col = 0 });
 
 	Tedit::LeftMotion left {};
 	auto left_range { left.resolve(editor) };
@@ -43,7 +43,7 @@ TEST_CASE("Horizontal motions clamp within the current line") {
 	REQUIRE(left_range.end.row == 0);
 	REQUIRE(left_range.end.col == 0);
 
-	editor.get_active_buffer()->set_cursor({ .row = 0, .col = 4 });
+	editor.get_buffer()->set_cursor({ .row = 0, .col = 4 });
 
 	Tedit::RightMotion right {};
 	auto right_range { right.resolve(editor) };
@@ -56,7 +56,7 @@ TEST_CASE("Horizontal motions clamp within the current line") {
 TEST_CASE("Vertical motions clamp column to target line length") {
 	Tedit::Editor editor {};
 	fill_editor_with_lines(editor);
-	editor.get_active_buffer()->set_cursor({ .row = 0, .col = 4 });
+	editor.get_buffer()->set_cursor({ .row = 0, .col = 4 });
 
 	Tedit::DownMotion down {};
 	auto down_range { down.resolve(editor) };
@@ -67,7 +67,7 @@ TEST_CASE("Vertical motions clamp column to target line length") {
 	REQUIRE(down_range.end.col == 2);
 	REQUIRE(down_range.linewise);
 
-	editor.get_active_buffer()->set_cursor({ .row = 2, .col = 3 });
+	editor.get_buffer()->set_cursor({ .row = 2, .col = 3 });
 
 	Tedit::UpMotion up {};
 	auto up_range { up.resolve(editor) };
@@ -82,7 +82,7 @@ TEST_CASE("Vertical motions clamp column to target line length") {
 TEST_CASE("Line boundary motions resolve start and end columns") {
 	Tedit::Editor editor {};
 	fill_editor_with_lines(editor);
-	editor.get_active_buffer()->set_cursor({ .row = 2, .col = 1 });
+	editor.get_buffer()->set_cursor({ .row = 2, .col = 1 });
 
 	Tedit::LineStartMotion start_motion {};
 	auto start_range { start_motion.resolve(editor) };
@@ -103,7 +103,7 @@ TEST_CASE("Line boundary motions resolve start and end columns") {
 TEST_CASE("Line motion selects the whole current line") {
 	Tedit::Editor editor {};
 	fill_editor_with_lines(editor);
-	editor.get_active_buffer()->set_cursor({ .row = 1, .col = 1 });
+	editor.get_buffer()->set_cursor({ .row = 1, .col = 1 });
 
 	Tedit::LineMotion motion {};
 	auto range { motion.resolve(editor) };

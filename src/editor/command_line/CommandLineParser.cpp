@@ -1,5 +1,7 @@
 #include "CommandLineParser.hpp"
 
+#include "CommandType.hpp"
+
 namespace Tedit {
 
 CommandLineParser::CommandLineParser(std::string_view source)
@@ -16,13 +18,30 @@ std::expected<ParsedCommand, std::string> CommandLineParser::parse() {
 	if (input_raw.cmd == "w" || input_raw.cmd == "write") {
 		return ParsedCommand {
 			.type = CommandType::Write,
-			.args = {}
+		};
+	}
+
+	if (input_raw.cmd == "wa" || input_raw.cmd == "wall") {
+		return ParsedCommand {
+			.type = CommandType::WriteAll,
+		};
+	}
+
+	if (input_raw.cmd == "wq" || input_raw.cmd == "wquit") {
+		return ParsedCommand {
+			.type = CommandType::WriteQuit,
 		};
 	}
 
 	if (input_raw.cmd == "q" || input_raw.cmd == "quit") {
 		return ParsedCommand {
-			.type = CommandType::QuitCurrentBuffer,
+			.type = CommandType::Quit,
+		};
+	}
+
+	if (input_raw.cmd == "qa" || input_raw.cmd == "qall") {
+		return ParsedCommand {
+			.type = CommandType::QuitAll,
 		};
 	}
 

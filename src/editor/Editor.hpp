@@ -7,9 +7,6 @@
 
 #include "Cursor.hpp"
 #include "IBuffer.hpp"
-#include "MemoryBufferSource.hpp"
-
-#include "buffer/TextBuffer.hpp"
 
 #include "command_line/CommandLineController.hpp"
 
@@ -49,37 +46,51 @@ public:
 	void move_start_line();
 
 	void change_mode(std::unique_ptr<Mode> mode);
-	bool try_save_to_buffer();
+	void save_buffer();
+	void save_buffer(size_t i);
 
-	void open_path(const fs::path& path);
-	void open_buffer(std::unique_ptr<IBuffer> buffer);
+	void open_path(const fs::path& path, bool replace = true);
+	void open_buffer(std::unique_ptr<IBuffer> buffer, bool replace = true);
 
-	IBuffer* get_active_buffer();
-	const IBuffer* get_active_buffer() const;
+	IBuffer* get_buffer();
+	const IBuffer* get_buffer() const;
+
+	IBuffer* get_buffer(size_t i);
+	const IBuffer* get_buffer(size_t i) const;
+
 	Mode* get_mode();
 
 	void activate_command_line();
 	void deactivate_command_line();
+
+	void switch_tab(bool next);
 
 	std::string current_line() const;
 	void set_cursor(const Cursor& cursor);
 
 private:
 	void ensure_cursor_visible();
+	void activate_current_buffer();
 
 	template <buffer_type T>
 	T* get_buffer_type() {
-		return dynamic_cast<T*>(m_buffer.get());
+		return dynamic_cast<T*>(get_buffer());
+	}
+
+	template <buffer_type T>
+	T* get_buffer_type(size_t i) {
+		return dynamic_cast<T*>(m_buffers[i].get());
 	}
 
 private:
-	std::unique_ptr<IBuffer> m_buffer { std::make_unique<TextBuffer>(std::make_unique<MemoryBufferSource>()) };
+	std::vector<std::unique_ptr<IBuffer>> m_buffers {};
+	size_t m_buffer_idx {};
 	Cursor* m_cursor {};
 	CommandLineController m_cmd_line {};
 	std::unique_ptr<Mode> m_mode {};
 
 	int m_last_key {};
-	bool m_should_close { false };
+	bool m_should_close {};
 	size_t m_top_row { 0 };
 };
 

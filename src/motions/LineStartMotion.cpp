@@ -3,7 +3,7 @@
 namespace Tedit {
 
 MotionRange LineStartMotion::resolve(Editor& e) {
-	auto* buffer { e.get_active_buffer() };
+	auto* buffer { e.get_buffer() };
 
 	Cursor start { buffer->get_cursor() };
 	Cursor end { start };

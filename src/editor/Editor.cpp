@@ -15,10 +15,14 @@
 #include "Renderer.hpp"
 #include "Terminal.hpp"
 
+#include "buffer/MemoryBufferSource.hpp"
+#include "buffer/TextBuffer.hpp"
+
 namespace Tedit {
 
 Editor::Editor() {
-	m_cursor = &m_buffer->get_cursor();
+	m_buffers.push_back(std::make_unique<TextBuffer>(std::make_unique<MemoryBufferSource>()));
+	m_cursor = &get_buffer()->get_cursor();
 	change_mode(std::make_unique<NormalMode>());
 }
 
@@ -40,7 +44,7 @@ void Editor::backspace() {
 			return;
 
 		if (m_cursor->col == 0) {
-			auto deleted_row { m_buffer->line(m_cursor->row) };
+			auto deleted_row { get_buffer()->line(m_cursor->row) };
 			edit_buffer->erase_line(m_cursor->row);
 			move_up();
 			edit_buffer->append_to(m_cursor->row, deleted_row);
@@ -64,10 +68,10 @@ void Editor::delete_char() {
 		return;
 
 	if (m_cursor->col == line_size) {
-		if (m_cursor->row >= m_buffer->line_count() - 1)
+		if (m_cursor->row >= get_buffer()->line_count() - 1)
 			return;
 
-		auto next_line { m_buffer->line(m_cursor->row + 1) };
+		auto next_line { get_buffer()->line(m_cursor->row + 1) };
 		edit_buffer->append_to(m_cursor->row, next_line);
 		edit_buffer->erase_line(m_cursor->row + 1);
 		return;
@@ -129,7 +133,7 @@ void Editor::move_up() {
 }
 
 void Editor::move_down() {
-	int last_valid_index { static_cast<int>(m_buffer->line_count() - 1) };
+	int last_valid_index { static_cast<int>(get_buffer()->line_count() - 1) };
 	m_cursor->row = std::min(m_cursor->row + 1, last_valid_index);
 	m_cursor->col = std::min(m_cursor->col, static_cast<int>(current_line().size()));
 
@@ -149,12 +153,12 @@ void Editor::ensure_cursor_visible() {
 }
 
 void Editor::set_cursor(const Cursor& cursor) {
-	m_buffer->set_cursor(cursor);
+	get_buffer()->set_cursor(cursor);
 	ensure_cursor_visible();
 }
 
 std::string Editor::current_line() const {
-	return std::string(m_buffer->line(m_cursor->row));
+	return std::string(get_buffer()->line(m_cursor->row));
 }
 
 void Editor::move_end_line() {
@@ -170,15 +174,35 @@ bool Editor::should_close() const {
 	return m_should_close;
 }
 
-void Editor::close() { m_should_close = true; }
+void Editor::close() {
+	m_buffers.erase(m_buffers.begin() + m_buffer_idx);
 
-bool Editor::try_save_to_buffer() {
-	auto save_buffer { get_buffer_type<ISaveableBuffer>() };
-	if (!save_buffer)
-		return false;
+	if (m_buffers.empty()) {
+		m_cursor = nullptr;
+		m_top_row = 0;
+		m_should_close = true;
+		return;
+	}
+
+	if (m_buffer_idx >= m_buffers.size())
+		m_buffer_idx = m_buffers.size() - 1;
+
+	activate_current_buffer();
+}
+
+void Editor::save_buffer() {
+	save_buffer(m_buffer_idx);
+}
+
+void Editor::save_buffer(size_t i) {
+	auto save_buffer { get_buffer_type<ISaveableBuffer>(i) };
+
+	if (!save_buffer) {
+		m_cmd_line.set_inactive_output(std::format("buffer is not saveable {}", get_buffer(i)->get_name()));
+	}
 
 	save_buffer->save();
-	return true;
+	m_cmd_line.set_inactive_output("saved buffer \"" + get_buffer(i)->get_name() + "\"");
 }
 
 void Editor::activate_command_line() {
@@ -198,27 +222,38 @@ void Editor::exec_and_leave_cmd_line() {
 	if (result.has_value()) {
 		switch (result->type) {
 		case CommandType::Write:
-			if (try_save_to_buffer())
-				m_cmd_line.set_inactive_output("saved buffer \"" + m_buffer->get_name() + "\"");
-			else
-				m_cmd_line.set_inactive_output(std::format("buffer is not saveable {}", m_buffer->get_name()));
+			save_buffer();
 			break;
-		case CommandType::QuitCurrentBuffer:
-			m_should_close = true;
+		case CommandType::Quit:
+			close();
 			break;
 
 		case CommandType::Open: {
 			const auto& file_path_arg { result->args[0] };
-			open_path(file_path_arg);
+			open_path(file_path_arg, false);
 
 			m_cmd_line.set_inactive_output("succesfully opened \"" + result->args[0] + "\"");
 			break;
 		}
 		case CommandType::OpenExplorer:
 			open_buffer(std::make_unique<DirectoryBuffer>(fs::current_path()));
-
 			m_cmd_line.set_inactive_output("");
 			break;
+		case CommandType::WriteAll: {
+			for (size_t i {}; i < m_buffers.size(); i++)
+				save_buffer(i);
+			break;
+		}
+		case CommandType::WriteQuit: {
+			save_buffer();
+			close();
+			break;
+		}
+		case CommandType::QuitAll: {
+			while (!m_buffers.empty())
+				close();
+			break;
+		}
 		}
 	} else {
 		m_cmd_line.set_inactive_output(result.error_or(""));
@@ -229,15 +264,18 @@ void Editor::move_start_line() { m_cursor->col = 0; }
 
 Mode* Editor::get_mode() { return m_mode.get(); }
 
-void Editor::open_path(const fs::path& path) {
-	open_buffer(std::make_unique<TextBuffer>(std::make_unique<FileBufferSource>(path)));
+void Editor::open_path(const fs::path& path, bool replace) {
+	open_buffer(std::make_unique<TextBuffer>(std::make_unique<FileBufferSource>(path)), replace);
 }
 
-void Editor::open_buffer(std::unique_ptr<IBuffer> buffer) {
-	m_buffer = std::move(buffer);
-	m_cursor = &m_buffer->get_cursor();
-	m_top_row = 0;
-	m_last_key = 0;
+void Editor::open_buffer(std::unique_ptr<IBuffer> buffer, bool replace) {
+	if (replace) {
+		m_buffers[m_buffer_idx] = std::move(buffer);
+	} else {
+		m_buffers.insert(m_buffers.begin() + m_buffer_idx, std::move(buffer));
+	}
+
+	activate_current_buffer();
 }
 
 void Editor::select() {
@@ -247,7 +285,34 @@ void Editor::select() {
 		buffer->select(*this);
 }
 
-IBuffer* Editor::get_active_buffer() { return m_buffer.get(); }
-const IBuffer* Editor::get_active_buffer() const { return m_buffer.get(); }
+IBuffer* Editor::get_buffer() { return m_buffers[m_buffer_idx].get(); }
+const IBuffer* Editor::get_buffer() const { return m_buffers[m_buffer_idx].get(); }
+
+IBuffer* Editor::get_buffer(size_t i) { return m_buffers[i].get(); }
+const IBuffer* Editor::get_buffer(size_t i) const { return m_buffers[i].get(); }
+
+void Editor::switch_tab(bool next) {
+	if (m_buffers.empty())
+		return;
+
+	if (next) {
+		m_buffer_idx++;
+		if (m_buffer_idx >= m_buffers.size())
+			m_buffer_idx = 0;
+	} else {
+		if (m_buffer_idx == 0)
+			m_buffer_idx = m_buffers.size() - 1;
+		else
+			m_buffer_idx--;
+	}
+
+	activate_current_buffer();
+}
+
+void Editor::activate_current_buffer() {
+	m_cursor = &get_buffer()->get_cursor();
+	m_top_row = 0;
+	m_last_key = 0;
+}
 
 }

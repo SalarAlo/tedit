@@ -1,3 +1,5 @@
+#include <variant>
+
 #include "TextBuffer.hpp"
 
 namespace Tedit {
@@ -103,6 +105,54 @@ void TextBuffer::save() {
 
 std::string TextBuffer::get_name() const {
 	return m_source->get_buffer_name();
+}
+
+void TextBuffer::handle_undo(const HistoryAction& action) {
+	std::visit([this](const auto& specific_action) { handle_undo(specific_action); }, action);
+}
+
+void TextBuffer::handle_undo(const InsertAction& insert_action) {
+	erase_text_at(insert_action.before, insert_action.text);
+	set_cursor(insert_action.before);
+}
+
+void TextBuffer::handle_undo(const DeleteAction& delete_action) {
+	insert_text_at(delete_action.after, delete_action.text);
+	set_cursor(delete_action.before);
+}
+
+void TextBuffer::insert_text_at(const Cursor& position, std::string_view text) {
+	Cursor cursor { position };
+
+	for (const char c : text) {
+		if (c == '\n') {
+			insert_newline(cursor.row, cursor.col);
+			cursor.row++;
+			cursor.col = 0;
+			continue;
+		}
+
+		insert_char(cursor.row, cursor.col, c);
+		cursor.col++;
+	}
+}
+
+void TextBuffer::erase_text_at(const Cursor& position, std::string_view text) {
+	Cursor cursor { position };
+
+	for (const char c : text) {
+		if (c == '\n') {
+			if (cursor.row >= line_count() - 1)
+				throw std::out_of_range("row");
+
+			auto next_line { line(cursor.row + 1) };
+			append_to(cursor.row, next_line);
+			erase_line(cursor.row + 1);
+			continue;
+		}
+
+		erase_char(cursor.row, cursor.col);
+	}
 }
 
 }

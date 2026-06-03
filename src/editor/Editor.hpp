@@ -6,6 +6,7 @@
 #include <string>
 
 #include "Cursor.hpp"
+#include "HistoryAction.hpp"
 #include "IBuffer.hpp"
 
 #include "command_line/CommandLineController.hpp"
@@ -68,9 +69,12 @@ public:
 	std::string current_line() const;
 	void set_cursor(const Cursor& cursor);
 
+	void undo();
+
 private:
 	void ensure_cursor_visible();
 	void activate_current_buffer();
+	void try_push_undo(const HistoryAction& action);
 
 	template <buffer_type T>
 	T* get_buffer_type() {

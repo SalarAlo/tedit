@@ -1,4 +1,5 @@
 #include <curses.h>
+#include <unistd.h>
 
 #include <filesystem>
 #include <memory>
@@ -6,17 +7,20 @@
 #include "Editor.hpp"
 
 #include "CommandLineParser.hpp"
-#include "DirectoryBuffer.hpp"
-#include "FileBufferSource.hpp"
-#include "IEditBuffer.hpp"
-#include "ISaveableBuffer.hpp"
-#include "ISelectableBuffer.hpp"
-#include "NormalMode.hpp"
+#include "HistoryActionMerger.hpp"
 #include "Renderer.hpp"
 #include "Terminal.hpp"
 
+#include "buffer/DirectoryBuffer.hpp"
+#include "buffer/FileBufferSource.hpp"
+#include "buffer/IEditBuffer.hpp"
+#include "buffer/IHistoryBuffer.hpp"
+#include "buffer/ISaveableBuffer.hpp"
+#include "buffer/ISelectableBuffer.hpp"
 #include "buffer/MemoryBufferSource.hpp"
 #include "buffer/TextBuffer.hpp"
+
+#include "modes/NormalMode.hpp"
 
 namespace Tedit {
 
@@ -39,22 +43,31 @@ void Editor::backspace() {
 		if (m_cursor->is_at_beginning())
 			return;
 
+		auto cursor_before { *m_cursor };
+
 		auto edit_buffer { get_buffer_type<IEditBuffer>() };
 		if (!edit_buffer)
 			return;
 
 		if (m_cursor->col == 0) {
 			auto deleted_row { get_buffer()->line(m_cursor->row) };
+			Cursor join_position {
+				.row = m_cursor->row - 1,
+				.col = static_cast<int>(get_buffer()->line(m_cursor->row - 1).size())
+			};
 			edit_buffer->erase_line(m_cursor->row);
-			move_up();
-			edit_buffer->append_to(m_cursor->row, deleted_row);
-			move_end_line();
 
+			edit_buffer->append_to(join_position.row, deleted_row);
+			set_cursor(join_position);
+
+			try_push_undo(DeleteAction { .before = cursor_before, .after = *m_cursor, .text = "\n" });
 			return;
 		}
 
 		move_left();
+		std::string deleted_character { edit_buffer->line(m_cursor->row)[m_cursor->col] };
 		edit_buffer->erase_char(m_cursor->row, m_cursor->col);
+		try_push_undo(DeleteAction { .before = cursor_before, .after = *m_cursor, .text = deleted_character });
 	}
 }
 
@@ -67,6 +80,8 @@ void Editor::delete_char() {
 	if (m_cursor->col > line_size)
 		return;
 
+	auto cursor_before { *m_cursor };
+
 	if (m_cursor->col == line_size) {
 		if (m_cursor->row >= get_buffer()->line_count() - 1)
 			return;
@@ -74,16 +89,21 @@ void Editor::delete_char() {
 		auto next_line { get_buffer()->line(m_cursor->row + 1) };
 		edit_buffer->append_to(m_cursor->row, next_line);
 		edit_buffer->erase_line(m_cursor->row + 1);
+
+		try_push_undo(DeleteAction { .before = cursor_before, .after = *m_cursor, .text = "\n" });
 		return;
 	}
 
+	std::string deleted_character { edit_buffer->line(m_cursor->row)[m_cursor->col] };
 	edit_buffer->erase_char(m_cursor->row, m_cursor->col);
+	try_push_undo(DeleteAction { .before = cursor_before, .after = *m_cursor, .text = deleted_character });
 }
 
 void Editor::newline() {
 	if (m_cmd_line.is_active())
 		return;
 
+	auto cursor_before { *m_cursor };
 	auto edit_buffer { get_buffer_type<IEditBuffer>() };
 	if (!edit_buffer)
 		return;
@@ -91,6 +111,8 @@ void Editor::newline() {
 	edit_buffer->insert_newline(m_cursor->row, m_cursor->col);
 	m_cursor->col = 0;
 	move_down();
+
+	try_push_undo(InsertAction { .before = cursor_before, .after = *m_cursor, .text = "\n" });
 }
 
 void Editor::insert_char(char c) {
@@ -102,7 +124,10 @@ void Editor::insert_char(char c) {
 			return;
 
 		edit_buffer->insert_char(m_cursor->row, m_cursor->col, c);
+		auto cursor_before { *m_cursor };
 		move_right();
+
+		try_push_undo(InsertAction { .before = cursor_before, .after = *m_cursor, .text = std::string { c } });
 	}
 }
 
@@ -313,6 +338,19 @@ void Editor::activate_current_buffer() {
 	m_cursor = &get_buffer()->get_cursor();
 	m_top_row = 0;
 	m_last_key = 0;
+}
+
+void Editor::try_push_undo(const HistoryAction& action) {
+	auto history_buffer { get_buffer_type<IHistoryBuffer>() };
+	if (!history_buffer)
+		return;
+	history_buffer->push_undo(action);
+}
+
+void Editor::undo() {
+	auto history_buffer { get_buffer_type<IHistoryBuffer>() };
+	if (history_buffer)
+		history_buffer->undo();
 }
 
 }

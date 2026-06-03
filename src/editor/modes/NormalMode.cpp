@@ -15,6 +15,7 @@
 #include "SelectAction.hpp"
 #include "SequenceAction.hpp"
 #include "SwitchTabAction.hpp"
+#include "UndoAction.hpp"
 
 #include "actions/NewlineAction.hpp"
 
@@ -86,6 +87,9 @@ std::unique_ptr<IAction> NormalMode::map_key_action(int key) {
 	switch (key) {
 	case 'i':
 		return std::make_unique<ChangeToModeAction>(std::make_unique<InsertMode>());
+
+	case 'u':
+		return std::make_unique<UndoAction>();
 
 	case 'a':
 		return sequence(

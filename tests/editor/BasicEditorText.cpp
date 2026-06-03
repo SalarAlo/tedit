@@ -1,6 +1,7 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include "Editor.hpp"
+#include "IEditBuffer.hpp"
 
 TEST_CASE("Insert character into empty buffer") {
 	Tedit::Editor editor {};
@@ -279,4 +280,96 @@ TEST_CASE("Complex editing session") {
 
 	REQUIRE(editor.get_buffer()->line(0) == "hello!");
 	REQUIRE(editor.get_buffer()->line(1) == "world");
+}
+
+TEST_CASE("Undo removes merged inserted text") {
+	Tedit::Editor editor {};
+
+	editor.insert_char('a');
+	editor.insert_char('b');
+	editor.insert_char('c');
+
+	editor.undo();
+
+	REQUIRE(editor.get_buffer()->line_count() == 1uz);
+	REQUIRE(editor.get_buffer()->line(0) == "");
+	REQUIRE(editor.get_buffer()->get_cursor().row == 0);
+	REQUIRE(editor.get_buffer()->get_cursor().col == 0);
+}
+
+TEST_CASE("Undo restores newline insertion") {
+	Tedit::Editor editor {};
+	auto* edit_buffer { dynamic_cast<Tedit::IEditBuffer*>(editor.get_buffer()) };
+
+	REQUIRE(edit_buffer != nullptr);
+	edit_buffer->set_text("ab");
+	editor.set_cursor({ .row = 0, .col = 2 });
+	editor.newline();
+
+	editor.undo();
+
+	REQUIRE(editor.get_buffer()->line_count() == 1uz);
+	REQUIRE(editor.get_buffer()->line(0) == "ab");
+	REQUIRE(editor.get_buffer()->get_cursor().row == 0);
+	REQUIRE(editor.get_buffer()->get_cursor().col == 2);
+}
+
+TEST_CASE("Undo restores line joined by backspace") {
+	Tedit::Editor editor {};
+	auto* edit_buffer { dynamic_cast<Tedit::IEditBuffer*>(editor.get_buffer()) };
+
+	REQUIRE(edit_buffer != nullptr);
+	edit_buffer->set_text("ab\ncd");
+	editor.set_cursor({ .row = 1, .col = 0 });
+	editor.backspace();
+
+	REQUIRE(editor.get_buffer()->line_count() == 1uz);
+	REQUIRE(editor.get_buffer()->line(0) == "abcd");
+
+	editor.undo();
+
+	REQUIRE(editor.get_buffer()->line_count() == 2uz);
+	REQUIRE(editor.get_buffer()->line(0) == "ab");
+	REQUIRE(editor.get_buffer()->line(1) == "cd");
+	REQUIRE(editor.get_buffer()->get_cursor().row == 1);
+	REQUIRE(editor.get_buffer()->get_cursor().col == 0);
+}
+
+TEST_CASE("Undo repeated backspace preserves deleted text order") {
+	Tedit::Editor editor {};
+	auto* edit_buffer { dynamic_cast<Tedit::IEditBuffer*>(editor.get_buffer()) };
+
+	REQUIRE(edit_buffer != nullptr);
+	edit_buffer->set_text("abcd");
+	editor.set_cursor({ .row = 0, .col = 4 });
+	editor.backspace();
+	editor.backspace();
+
+	REQUIRE(editor.get_buffer()->line(0) == "ab");
+
+	editor.undo();
+
+	REQUIRE(editor.get_buffer()->line(0) == "abcd");
+	REQUIRE(editor.get_buffer()->get_cursor().row == 0);
+	REQUIRE(editor.get_buffer()->get_cursor().col == 4);
+}
+
+TEST_CASE("Undo repeated delete preserves deleted text order") {
+	Tedit::Editor editor {};
+	auto* edit_buffer { dynamic_cast<Tedit::IEditBuffer*>(editor.get_buffer()) };
+
+	REQUIRE(edit_buffer != nullptr);
+	edit_buffer->set_text("abcd");
+	editor.set_cursor({ .row = 0, .col = 1 });
+
+	editor.delete_char();
+	editor.delete_char();
+
+	REQUIRE(editor.get_buffer()->line(0) == "ad");
+
+	editor.undo();
+
+	REQUIRE(editor.get_buffer()->line(0) == "abcd");
+	REQUIRE(editor.get_buffer()->get_cursor().row == 0);
+	REQUIRE(editor.get_buffer()->get_cursor().col == 1);
 }

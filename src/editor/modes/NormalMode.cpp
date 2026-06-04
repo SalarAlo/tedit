@@ -16,6 +16,7 @@
 #include "SequenceAction.hpp"
 #include "SwitchTabAction.hpp"
 #include "UndoAction.hpp"
+#include "WordMotion.hpp"
 
 #include "actions/NewlineAction.hpp"
 
@@ -150,6 +151,19 @@ std::unique_ptr<IMotion> NormalMode::map_motion(int key) {
 	case '$':
 		return std::make_unique<LineEndMotion>();
 
+	case 'w':
+		return std::make_unique<WordMotion>();
+	case 'W':
+		return std::make_unique<WordMotion>(Detail::WordKind::WORD);
+	case 'e':
+		return std::make_unique<WordEndMotion>();
+	case 'E':
+		return std::make_unique<WordEndMotion>(Detail::WordKind::WORD);
+	case 'b':
+		return std::make_unique<BackWordMotion>();
+	case 'B':
+		return std::make_unique<BackWordMotion>(Detail::WordKind::WORD);
+
 	case KEY_LEFT:
 		return std::make_unique<LeftMotion>();
 	case KEY_RIGHT:
@@ -207,8 +221,6 @@ void NormalMode::reset_state() {
 }
 
 std::unique_ptr<IAction> NormalMode::get_operator_action(int key) {
-	auto motion { map_motion(key) };
-
 	if (is_operator_key(key)) {
 		auto pressed_operator { *m_operators.get(static_cast<char>(key)) };
 
@@ -218,6 +230,7 @@ std::unique_ptr<IAction> NormalMode::get_operator_action(int key) {
 		}
 	}
 
+	auto motion { map_motion(key) };
 	if (!motion)
 		return nullptr;
 

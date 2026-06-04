@@ -1,7 +1,5 @@
 #pragma once
 
-#include <algorithm>
-
 #include "motions/IMotion.hpp"
 
 namespace Tedit {

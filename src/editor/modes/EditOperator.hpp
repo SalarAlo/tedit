@@ -5,7 +5,7 @@ enum class EditOperator {
 	None,
 	Yank,
 	Delete,
-	Change
+	Change,
 };
 
 }

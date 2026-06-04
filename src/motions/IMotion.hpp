@@ -6,8 +6,8 @@
 namespace Tedit {
 
 struct MotionRange {
-	Cursor start;
-	Cursor end;
+	Cursor start {};
+	Cursor end {};
 
 	bool inclusive {};
 	bool linewise {};

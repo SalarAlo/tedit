@@ -19,6 +19,8 @@ public:
 	Terminal& operator=(const Terminal&) = delete;
 
 	void clear();
+	void clear_line(int row);
+	void clear_to_end_of_line();
 	void present();
 
 	void draw_text(const DrawCall& call);

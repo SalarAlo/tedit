@@ -1,8 +1,10 @@
 #include <curses.h>
 #include <unistd.h>
 
+#include <algorithm>
 #include <filesystem>
 #include <memory>
+#include <string>
 
 #include "Editor.hpp"
 
@@ -23,6 +25,23 @@
 #include "modes/NormalMode.hpp"
 
 namespace Tedit {
+
+namespace {
+
+	std::string join_lines(const IBuffer& buffer, int start_row, int end_row) {
+		std::string text {};
+
+		for (int row { start_row }; row <= end_row; ++row) {
+			if (row > start_row)
+				text += '\n';
+
+			text += buffer.line(row);
+		}
+
+		return text;
+	}
+
+}
 
 Editor::Editor() {
 	m_buffers.push_back(std::make_unique<TextBuffer>(std::make_unique<MemoryBufferSource>()));
@@ -97,6 +116,92 @@ void Editor::delete_char() {
 	std::string deleted_character { edit_buffer->line(m_cursor->row)[m_cursor->col] };
 	edit_buffer->erase_char(m_cursor->row, m_cursor->col);
 	try_push_undo(DeleteAction { .before = cursor_before, .after = *m_cursor, .text = deleted_character });
+}
+
+void Editor::delete_range(Cursor start, Cursor end, bool inclusive, bool linewise) {
+	auto edit_buffer { get_buffer_type<IEditBuffer>() };
+	if (!edit_buffer || get_buffer()->line_count() == 0)
+		return;
+
+	auto cursor_before { *m_cursor };
+
+	if (end.row < start.row || (end.row == start.row && end.col < start.col))
+		std::swap(start, end);
+
+	int last_row { get_buffer()->line_count() - 1 };
+	start.row = std::clamp(start.row, 0, last_row);
+	end.row = std::clamp(end.row, 0, last_row);
+
+	if (linewise) {
+		auto deleted_text { join_lines(*get_buffer(), start.row, end.row) };
+		Cursor undo_position { .row = start.row, .col = 0 };
+
+		if (start.row > 0 && end.row == last_row) {
+			undo_position.row = start.row - 1;
+			undo_position.col = static_cast<int>(get_buffer()->line(undo_position.row).size());
+			deleted_text = '\n' + deleted_text;
+		} else if (end.row < last_row) {
+			deleted_text += '\n';
+		}
+
+		for (int row { end.row }; row >= start.row; --row)
+			edit_buffer->erase_line(row);
+
+		if (edit_buffer->line_count() == 0)
+			edit_buffer->set_text("\n");
+
+		Cursor cursor_after {
+			.row = std::min(start.row, edit_buffer->line_count() - 1),
+			.col = 0
+		};
+		set_cursor(cursor_after);
+		try_push_undo(DeleteAction { .before = cursor_before, .after = undo_position, .text = deleted_text });
+		return;
+	}
+
+	start.col = std::clamp<int>(start.col, 0, get_buffer()->line(start.row).size());
+	end.col = std::clamp<int>(end.col + (inclusive ? 1 : 0), 0, get_buffer()->line(end.row).size());
+
+	std::string deleted_text {};
+	if (start.row == end.row) {
+		if (end.col <= start.col)
+			return;
+
+		auto line { get_buffer()->line(start.row) };
+		deleted_text = line.substr(start.col, end.col - start.col);
+
+		for (int col { end.col - 1 }; col >= start.col; --col)
+			edit_buffer->erase_char(start.row, col);
+
+		set_cursor(start);
+		try_push_undo(DeleteAction { .before = cursor_before, .after = start, .text = deleted_text });
+		return;
+	}
+
+	deleted_text += get_buffer()->line(start.row).substr(start.col);
+	deleted_text += '\n';
+
+	for (int row { start.row + 1 }; row < end.row; ++row) {
+		deleted_text += get_buffer()->line(row);
+		deleted_text += '\n';
+	}
+
+	deleted_text += get_buffer()->line(end.row).substr(0, end.col);
+
+	while (static_cast<int>(edit_buffer->line(start.row).size()) > start.col)
+		edit_buffer->erase_char(start.row, start.col);
+
+	for (int row { end.row - 1 }; row > start.row; --row)
+		edit_buffer->erase_line(row);
+
+	for (int col {}; col < end.col; ++col)
+		edit_buffer->erase_char(start.row + 1, 0);
+
+	auto tail { std::string(edit_buffer->line(start.row + 1)) };
+	edit_buffer->erase_line(start.row + 1);
+	edit_buffer->append_to(start.row, tail);
+	set_cursor(start);
+	try_push_undo(DeleteAction { .before = cursor_before, .after = start, .text = deleted_text });
 }
 
 void Editor::newline() {

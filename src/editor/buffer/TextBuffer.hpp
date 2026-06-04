@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstdint>
+
 #include <memory>
 #include <string>
 #include <string_view>
@@ -11,6 +13,7 @@
 #include "ISaveableBuffer.hpp"
 
 namespace Tedit {
+
 class TextBuffer final : public IEditBuffer, public ISaveableBuffer, public IHistoryBuffer {
 public:
 	TextBuffer(std::unique_ptr<IBufferSource> src);
@@ -25,10 +28,13 @@ public:
 
 	std::string_view line(int row) const override;
 	int line_count() const override;
+	std::string text() const;
 
 	std::string get_name() const override;
+	const IBufferSource* get_source() const;
 
 	void save() override;
+	uint64_t get_revisions() const;
 
 protected:
 	void handle_undo(const HistoryAction& action) override;
@@ -42,6 +48,7 @@ private:
 
 	std::vector<std::string> m_lines {};
 	std::unique_ptr<IBufferSource> m_source {};
+	uint64_t m_revisions {};
 };
 
 }

@@ -55,6 +55,25 @@ TEST_CASE("DeleteMotionAction deletes an inclusive reversed character range") {
 	REQUIRE(editor.get_buffer()->get_cursor().col == 1);
 }
 
+TEST_CASE("DeleteMotionAction records undo for a character range") {
+	Tedit::Editor editor {};
+	insert_text(editor, "abcde");
+
+	auto action { delete_motion({
+	    .start = { .row = 0, .col = 1 },
+	    .end = { .row = 0, .col = 3 },
+	    .inclusive = true,
+	}) };
+
+	action.execute(editor);
+	editor.undo();
+
+	REQUIRE(editor.get_buffer()->line_count() == 1);
+	REQUIRE(editor.get_buffer()->line(0) == "abcde");
+	REQUIRE(editor.get_buffer()->get_cursor().row == 0);
+	REQUIRE(editor.get_buffer()->get_cursor().col == 5);
+}
+
 TEST_CASE("DeleteMotionAction joins text around a multi-line range") {
 	Tedit::Editor editor {};
 	insert_text(editor, "abcd\nxy\nuvw");
@@ -70,6 +89,26 @@ TEST_CASE("DeleteMotionAction joins text around a multi-line range") {
 	REQUIRE(editor.get_buffer()->line(0) == "abvw");
 	REQUIRE(editor.get_buffer()->get_cursor().row == 0);
 	REQUIRE(editor.get_buffer()->get_cursor().col == 2);
+}
+
+TEST_CASE("DeleteMotionAction records undo for a multi-line range") {
+	Tedit::Editor editor {};
+	insert_text(editor, "abcd\nxy\nuvw");
+
+	auto action { delete_motion({
+	    .start = { .row = 0, .col = 2 },
+	    .end = { .row = 2, .col = 1 },
+	}) };
+
+	action.execute(editor);
+	editor.undo();
+
+	REQUIRE(editor.get_buffer()->line_count() == 3);
+	REQUIRE(editor.get_buffer()->line(0) == "abcd");
+	REQUIRE(editor.get_buffer()->line(1) == "xy");
+	REQUIRE(editor.get_buffer()->line(2) == "uvw");
+	REQUIRE(editor.get_buffer()->get_cursor().row == 2);
+	REQUIRE(editor.get_buffer()->get_cursor().col == 3);
 }
 
 TEST_CASE("DeleteMotionAction linewise deletion leaves a valid empty buffer") {
@@ -88,4 +127,25 @@ TEST_CASE("DeleteMotionAction linewise deletion leaves a valid empty buffer") {
 	REQUIRE(editor.get_buffer()->line(0) == "");
 	REQUIRE(editor.get_buffer()->get_cursor().row == 0);
 	REQUIRE(editor.get_buffer()->get_cursor().col == 0);
+}
+
+TEST_CASE("DeleteMotionAction records undo for a linewise range at the end") {
+	Tedit::Editor editor {};
+	insert_text(editor, "one\ntwo\nthree");
+
+	auto action { delete_motion({
+	    .start = { .row = 1, .col = 0 },
+	    .end = { .row = 2, .col = 5 },
+	    .linewise = true,
+	}) };
+
+	action.execute(editor);
+	editor.undo();
+
+	REQUIRE(editor.get_buffer()->line_count() == 3);
+	REQUIRE(editor.get_buffer()->line(0) == "one");
+	REQUIRE(editor.get_buffer()->line(1) == "two");
+	REQUIRE(editor.get_buffer()->line(2) == "three");
+	REQUIRE(editor.get_buffer()->get_cursor().row == 2);
+	REQUIRE(editor.get_buffer()->get_cursor().col == 5);
 }

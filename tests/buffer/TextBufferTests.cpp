@@ -22,11 +22,11 @@ public:
 		m_buffer = data;
 	}
 
-	std::string read() override {
+	std::string read() const override {
 		return m_buffer;
 	}
 
-	std::string get_buffer_name() override {
+	std::string get_buffer_name() const override {
 		return m_name;
 	}
 

@@ -20,6 +20,7 @@ void TextBuffer::insert_char(int row, int col, char c) {
 
 	if (col < 0 || col > static_cast<int>(ln.size()))
 		throw std::out_of_range("col");
+	m_revisions++;
 
 	ln.insert(ln.begin() + col, c);
 }
@@ -34,6 +35,7 @@ void TextBuffer::erase_char(int row, int col) {
 		throw std::out_of_range("col");
 
 	ln.erase(ln.begin() + col);
+	m_revisions++;
 }
 
 void TextBuffer::insert_newline(int row, int col) {
@@ -47,8 +49,9 @@ void TextBuffer::insert_newline(int row, int col) {
 
 	std::string right = ln.substr(col);
 	ln.erase(col);
-
 	m_lines.insert(m_lines.begin() + row + 1, std::move(right));
+
+	m_revisions++;
 }
 
 std::string_view TextBuffer::line(int row) const {
@@ -62,17 +65,31 @@ int TextBuffer::line_count() const {
 	return static_cast<int>(m_lines.size());
 }
 
+std::string TextBuffer::text() const {
+	std::string output {};
+
+	for (const auto& line : m_lines) {
+		output += line;
+		output += '\n';
+	}
+
+	return output;
+}
+
 void TextBuffer::erase_line(int row) {
 	if (row < 0 || row >= line_count())
 		throw std::out_of_range("row");
 
 	m_lines.erase(m_lines.begin() + row);
+	m_revisions++;
 }
 
 void TextBuffer::append_to(int row, std::string_view txt) {
 	if (row < 0 || row >= line_count())
 		throw std::out_of_range("row");
+
 	m_lines[row].append(txt);
+	m_revisions++;
 }
 
 void TextBuffer::set_text(std::string_view txt) {
@@ -91,6 +108,8 @@ void TextBuffer::set_text(std::string_view txt) {
 
 	if (!accumulator.empty())
 		m_lines.push_back(std::move(accumulator));
+
+	m_revisions++;
 }
 
 void TextBuffer::save() {
@@ -154,5 +173,9 @@ void TextBuffer::erase_text_at(const Cursor& position, std::string_view text) {
 		erase_char(cursor.row, cursor.col);
 	}
 }
+
+const IBufferSource* TextBuffer::get_source() const { return m_source.get(); }
+
+uint64_t TextBuffer::get_revisions() const { return m_revisions; }
 
 }

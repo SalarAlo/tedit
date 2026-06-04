@@ -18,7 +18,7 @@ void FileBufferSource::write(std::string_view data) {
 	file.write(data.data(), data.size());
 }
 
-std::string FileBufferSource::read() {
+std::string FileBufferSource::read() const {
 	std::ifstream file { m_file, std::ios::binary };
 
 	if (!file.is_open()) {
@@ -31,6 +31,8 @@ std::string FileBufferSource::read() {
 	};
 }
 
-std::string FileBufferSource::get_buffer_name() { return m_file.filename(); }
+std::string FileBufferSource::get_buffer_name() const { return m_file.filename(); }
+
+fs::path FileBufferSource::get_path() const { return m_file; }
 
 }

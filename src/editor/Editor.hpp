@@ -8,6 +8,7 @@
 #include "Cursor.hpp"
 #include "HistoryAction.hpp"
 #include "IBuffer.hpp"
+#include "SyntaxService.hpp"
 
 #include "command_line/CommandLineController.hpp"
 
@@ -33,6 +34,7 @@ public:
 
 	void backspace();
 	void delete_char();
+	void delete_range(Cursor start, Cursor end, bool inclusive = false, bool linewise = false);
 	void newline();
 	void insert_char(char c);
 
@@ -58,6 +60,8 @@ public:
 
 	IBuffer* get_buffer(size_t i);
 	const IBuffer* get_buffer(size_t i) const;
+
+	SyntaxService& get_syntax_service() { return m_syntax_service; }
 
 	Mode* get_mode();
 
@@ -91,6 +95,7 @@ private:
 	size_t m_buffer_idx {};
 	Cursor* m_cursor {};
 	CommandLineController m_cmd_line {};
+	SyntaxService m_syntax_service {};
 	std::unique_ptr<Mode> m_mode {};
 
 	int m_last_key {};

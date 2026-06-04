@@ -15,6 +15,8 @@ public:
 	virtual int line_count() const = 0;
 	virtual std::string get_name() const = 0;
 
+	std::string text() const;
+
 	Cursor& get_cursor();
 	const Cursor& get_cursor() const;
 	void set_cursor(const Cursor& cursor);

@@ -113,6 +113,15 @@ void Terminal::clear() {
 	write_escape("\033[2J\033[H");
 }
 
+void Terminal::clear_line(int row) {
+	move_cursor(row, 0);
+	write_escape("\033[2K");
+}
+
+void Terminal::clear_to_end_of_line() {
+	write_escape("\033[K");
+}
+
 void Terminal::present() {
 }
 
@@ -132,14 +141,17 @@ void Terminal::draw_text(const DrawCall& call) {
 void Terminal::set_cursor_shape(CursorShape shape) {
 	switch (shape) {
 	case CursorShape::Block:
+		write_escape("\033[?25h");
 		write_escape("\033[2 q");
 		break;
 
 	case CursorShape::Beam:
+		write_escape("\033[?25h");
 		write_escape("\033[6 q");
 		break;
 
 	case CursorShape::Underline:
+		write_escape("\033[?25h");
 		write_escape("\033[4 q");
 		break;
 

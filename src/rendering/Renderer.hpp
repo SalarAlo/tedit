@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Editor.hpp"
+#include "ColorTheme.hpp"
+#include "HighlightSpan.hpp"
 
 namespace Tedit {
 
@@ -16,6 +18,9 @@ public:
 private:
 	void draw_gutter(size_t gutter_width, bool relative);
 	void draw_text(size_t gutter_width);
+	void draw_highlighted_line(int screen_row, int col_offset, std::string_view text, std::vector<HighlightSpan> spans);
+	int visual_column(std::string_view text, int byte_col);
+	std::string expand_tabs(std::string_view text, int initial_visual_col = 0);
 	void draw_bar_below();
 	void draw_cmd_line();
 
@@ -24,6 +29,7 @@ private:
 
 private:
 	Editor* m_editor;
+	ColorTheme m_color_theme {};
 };
 
 }

@@ -17,6 +17,10 @@ find_package(Curses REQUIRED)
 
 # Tree-sitter
 
+if(NOT EXISTS ${CMAKE_SOURCE_DIR}/vendor/tree_sitter_cpp/CMakeLists.txt)
+    message(FATAL_ERROR "Missing vendor/tree_sitter_cpp. Run: git submodule update --init --recursive")
+endif()
+
 add_subdirectory(vendor/tree_sitter_cpp EXCLUDE_FROM_ALL)
 
 target_include_directories(tree-sitter-cpp

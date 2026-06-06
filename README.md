@@ -34,6 +34,7 @@ sudo apt install build-essential cmake libncurses-dev
 Build the project:
 
 ```bash
+git submodule update --init --recursive
 cmake -S . -B build
 cmake --build build
 ```

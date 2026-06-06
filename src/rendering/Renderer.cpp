@@ -23,11 +23,11 @@ void Renderer::render(Editor& editor) {
 	draw_gutter(gutter_width, true);
 	draw_text(gutter_width);
 	draw_bar_below();
-	draw_cmd_line();
+	draw_prompt_line();
 
-	if (m_editor->m_cmd_line.is_active()) {
+	if (m_editor->m_prompt_line.is_active()) {
 		auto [_, height] = Terminal::get_instance().get_terminal_dimensions();
-		Terminal::get_instance().move_cursor(height - 1, m_editor->m_cmd_line.cursor_col());
+		Terminal::get_instance().move_cursor(height - 1, m_editor->m_prompt_line.cursor_col());
 	} else {
 		size_t offset { gutter_width + INDENT + 1 };
 		int screen_row { m_editor->m_cursor->row - static_cast<int>(m_editor->m_top_row) };
@@ -198,17 +198,17 @@ void Renderer::draw_bar_below() {
 	Terminal::get_instance().draw_text(mode_details_draw_call);
 }
 
-void Renderer::draw_cmd_line() {
+void Renderer::draw_prompt_line() {
 	auto [_, height] = Terminal::get_instance().get_terminal_dimensions();
 	Terminal::get_instance().clear_line(height - 1);
-	auto is_active { m_editor->m_cmd_line.is_active() };
-	std::string cmd_line_str {
+	auto is_active { m_editor->m_prompt_line.is_active() };
+	std::string prompt_line_str {
 		is_active
-		    ? CommandLineController::COMMAND_LINE_KEY + std::string(m_editor->m_cmd_line.command())
-		    : std::string(m_editor->m_cmd_line.inactive_output())
+		    ? PromptLineController::COMMAND_PROMPT_KEY + std::string(m_editor->m_prompt_line.input())
+		    : std::string(m_editor->m_prompt_line.inactive_output())
 	};
 
-	Terminal::get_instance().draw_text(DrawCall { height - 1, 0, cmd_line_str });
+	Terminal::get_instance().draw_text(DrawCall { height - 1, 0, prompt_line_str });
 }
 
 int Renderer::make_relative(int line) {

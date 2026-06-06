@@ -1,7 +1,11 @@
-; Functions
+; Functions, methods, and constructors
 
 (call_expression
   function: (identifier) @function)
+
+(call_expression
+  function: (field_expression
+    field: (field_identifier) @function.method))
 
 (call_expression
   function: (qualified_identifier
@@ -11,72 +15,115 @@
   name: (identifier) @function)
 
 (template_method
-  name: (field_identifier) @function)
+  name: (field_identifier) @function.method)
 
 (function_declarator
   declarator: (identifier) @function)
+
+(function_declarator
+  declarator: (field_identifier) @function.method)
 
 (function_declarator
   declarator: (qualified_identifier
     name: (identifier) @function))
 
 (function_declarator
-  declarator: (field_identifier) @function)
+  declarator: (operator_name) @function)
+
+(function_declarator
+  declarator: (destructor_name) @destructor)
+
+(function_declarator
+  declarator: (template_function
+    name: (identifier) @function))
+
+(function_declarator
+  declarator: (template_method
+    name: (field_identifier) @function.method))
+
+(field_declaration
+  declarator: (function_declarator
+    declarator: (field_identifier) @function.method))
+
+(declaration
+  declarator: (function_declarator
+    declarator: (identifier) @function))
 
 ; Types
 
-(primitive_type) @type
+(primitive_type) @type.builtin
+(sized_type_specifier) @type.builtin
 (type_identifier) @type
-(sized_type_specifier) @type
-(auto) @type
+(template_type
+  name: (type_identifier) @type)
+(dependent_type
+  (type_identifier) @type)
+(auto) @type.builtin
 
 ((namespace_identifier) @type
  (#match? @type "^[A-Z]"))
 
-; Variables and fields
+; Variables, fields, and parameters
 
 (identifier) @variable
 (field_identifier) @property
+(field_expression
+  field: (field_identifier) @property)
 
 (parameter_declaration
-  declarator: (identifier) @parameter)
+  declarator: (identifier) @variable.parameter)
 
 (optional_parameter_declaration
-  declarator: (identifier) @parameter)
+  declarator: (identifier) @variable.parameter)
 
-; Constants
+; Constants and literals
 
 (this) @variable.builtin
-(null "nullptr" @constant)
-(true) @constant
-(false) @constant
+(null "nullptr" @constant.builtin)
+(true) @boolean
+(false) @boolean
+(number_literal) @number
+(char_literal) @character
+(literal_suffix) @string.special
 
-; Modules
+(enumerator
+  name: (identifier) @constant)
+
+; Modules and namespaces
 
 (module_name
   (identifier) @module)
 
-; Numbers
-
-(number_literal) @number
+(namespace_identifier) @module
 
 ; Strings
 
 (string_literal) @string
 (raw_string_literal) @string
-(char_literal) @string
 (system_lib_string) @string
 
 ; Comments
 
 (comment) @comment
 
+; Attributes and labels
+
+(attribute
+  name: (identifier) @attribute)
+
+(statement_identifier) @label
+
 ; Preprocessor
 
+(["#define" "#elif" "#elifdef" "#else" "#endif" "#if" "#ifdef" "#ifndef" "#include"] @keyword.directive)
+(preproc_directive) @keyword.directive
 (preproc_include) @preprocessor
-(preproc_def) @preprocessor
-(preproc_function_def) @preprocessor
-(preproc_call) @preprocessor
+(preproc_def
+  name: (identifier) @function.macro)
+(preproc_function_def
+  name: (identifier) @function.macro)
+(preproc_call
+  directive: (preproc_directive) @keyword.directive)
 (preproc_if) @preprocessor
 (preproc_ifdef) @preprocessor
 (preproc_else) @preprocessor
@@ -84,62 +131,87 @@
 ; Keywords
 
 [
- "alignas"
- "alignof"
- "asm"
- "break"
- "case"
- "catch"
- "class"
- "co_await"
+ "if"
+ "else"
+ "switch"
+] @keyword.conditional
+
+[
+ "for"
+ "while"
+ "do"
+] @keyword.repeat
+
+[
+ "return"
  "co_return"
- "co_yield"
- "concept"
+] @keyword.return
+
+[
+ "try"
+ "catch"
+ "throw"
+] @keyword.exception
+
+[
+ "alignas"
  "const"
  "consteval"
  "constexpr"
  "constinit"
- "continue"
- "decltype"
- "default"
- "delete"
- "do"
- "else"
- "enum"
  "explicit"
- "export"
  "extern"
  "final"
- "for"
  "friend"
- "goto"
- "if"
- "import"
  "mutable"
- "namespace"
- "new"
  "noexcept"
- "operator"
  "override"
- "private"
- "protected"
- "public"
- "requires"
- "return"
- "sizeof"
  "static"
- "static_assert"
+ "virtual"
+] @keyword.modifier
+
+[
+ "class"
+ "concept"
+ "enum"
+ "namespace"
  "struct"
- "switch"
  "template"
- "throw"
- "try"
  "typedef"
  "typename"
  "union"
  "using"
- "virtual"
- "while"
+] @keyword.storage
+
+[
+ "operator"
+ "sizeof"
+ "alignof"
+ "decltype"
+ "requires"
+ "co_await"
+] @keyword.operator
+
+[
+ "import"
+ "export"
+ "module"
+] @keyword.directive
+
+[
+ "asm"
+ "break"
+ "case"
+ "continue"
+ "default"
+ "delete"
+ "goto"
+ "new"
+ "private"
+ "protected"
+ "public"
+ "static_assert"
+ "co_yield"
 ] @keyword
 
 ; Operators and punctuation
@@ -151,6 +223,11 @@
  "/"
  "%"
  "="
+ "+="
+ "-="
+ "*="
+ "/="
+ "%="
  "=="
  "!="
  "<"
@@ -164,10 +241,20 @@
  "|"
  "^"
  "~"
+ "&="
+ "|="
+ "^="
  "<<"
  ">>"
+ "<<="
+ ">>="
+ "++"
+ "--"
  "->"
+ "->*"
  "."
+ ".*"
+ "?"
 ] @operator
 
 [
@@ -177,7 +264,13 @@
  "}"
  "["
  "]"
+ "<"
+ ">"
+] @punctuation.bracket
+
+[
  ";"
  ","
  ":"
-] @punctuation
+ "::"
+] @punctuation.delimiter

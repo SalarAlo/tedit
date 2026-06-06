@@ -56,8 +56,8 @@ void Editor::handle_key(int key) {
 }
 
 void Editor::backspace() {
-	if (m_cmd_line.is_active()) {
-		m_cmd_line.backspace();
+	if (m_prompt_line.is_active()) {
+		m_prompt_line.backspace();
 	} else {
 		if (m_cursor->is_at_beginning())
 			return;
@@ -205,7 +205,7 @@ void Editor::delete_range(Cursor start, Cursor end, bool inclusive, bool linewis
 }
 
 void Editor::newline() {
-	if (m_cmd_line.is_active())
+	if (m_prompt_line.is_active())
 		return;
 
 	auto cursor_before { *m_cursor };
@@ -221,8 +221,8 @@ void Editor::newline() {
 }
 
 void Editor::insert_char(char c) {
-	if (m_cmd_line.is_active()) {
-		m_cmd_line.insert_char(c);
+	if (m_prompt_line.is_active()) {
+		m_prompt_line.insert_char(c);
 	} else {
 		auto edit_buffer { get_buffer_type<IEditBuffer>() };
 		if (!edit_buffer)
@@ -237,8 +237,8 @@ void Editor::insert_char(char c) {
 }
 
 void Editor::move_left() {
-	if (m_cmd_line.is_active()) {
-		m_cmd_line.move_left();
+	if (m_prompt_line.is_active()) {
+		m_prompt_line.move_left();
 		return;
 	}
 
@@ -246,8 +246,8 @@ void Editor::move_left() {
 }
 
 void Editor::move_right() {
-	if (m_cmd_line.is_active()) {
-		m_cmd_line.move_right();
+	if (m_prompt_line.is_active()) {
+		m_prompt_line.move_right();
 		return;
 	}
 
@@ -328,23 +328,24 @@ void Editor::save_buffer(size_t i) {
 	auto save_buffer { get_buffer_type<ISaveableBuffer>(i) };
 
 	if (!save_buffer) {
-		m_cmd_line.set_inactive_output(std::format("buffer is not saveable {}", get_buffer(i)->get_name()));
+		m_prompt_line.set_inactive_output(std::format("buffer is not saveable {}", get_buffer(i)->get_name()));
+		return;
 	}
 
 	save_buffer->save();
-	m_cmd_line.set_inactive_output("saved buffer \"" + get_buffer(i)->get_name() + "\"");
+	m_prompt_line.set_inactive_output("saved buffer \"" + get_buffer(i)->get_name() + "\"");
 }
 
 void Editor::activate_command_line() {
-	m_cmd_line.activate();
+	m_prompt_line.activate();
 }
 
 void Editor::deactivate_command_line() {
-	m_cmd_line.deactivate();
+	m_prompt_line.deactivate();
 }
 
 void Editor::exec_and_leave_cmd_line() {
-	CommandLineParser parser { m_cmd_line.command() };
+	CommandLineParser parser { m_prompt_line.input() };
 	auto result { parser.parse() };
 
 	deactivate_command_line();
@@ -362,12 +363,12 @@ void Editor::exec_and_leave_cmd_line() {
 			const auto& file_path_arg { result->args[0] };
 			open_path(file_path_arg, false);
 
-			m_cmd_line.set_inactive_output("succesfully opened \"" + result->args[0] + "\"");
+			m_prompt_line.set_inactive_output("succesfully opened \"" + result->args[0] + "\"");
 			break;
 		}
 		case CommandType::OpenExplorer:
 			open_buffer(std::make_unique<DirectoryBuffer>(fs::current_path()));
-			m_cmd_line.set_inactive_output("");
+			m_prompt_line.set_inactive_output("");
 			break;
 		case CommandType::WriteAll: {
 			for (size_t i {}; i < m_buffers.size(); i++)
@@ -386,7 +387,7 @@ void Editor::exec_and_leave_cmd_line() {
 		}
 		}
 	} else {
-		m_cmd_line.set_inactive_output(result.error_or(""));
+		m_prompt_line.set_inactive_output(result.error_or(""));
 	}
 }
 

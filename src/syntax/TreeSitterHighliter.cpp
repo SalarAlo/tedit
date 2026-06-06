@@ -84,6 +84,7 @@ TreeSitterHighliter::TreeSitterHighliter(const SyntaxLanguage& language)
 	TSQueryError error_type {};
 
 	m_query = ts_query_new(language.tree_sitter_language(), query_src.data(), query_src.size(), &error_offset, &error_type);
+
 	if (!m_query) {
 		throw std::runtime_error(
 		    "failed to compile tree-sitter query at byte "
@@ -118,34 +119,86 @@ std::string TreeSitterHighliter::read_file(const std::filesystem::path& path) {
 }
 
 HighlightKind TreeSitterHighliter::highlight_kind_from_capture(std::string_view capture_name) {
+	if (capture_name == "keyword.conditional")
+		return HighlightKind::KeywordConditional;
+	if (capture_name == "keyword.directive")
+		return HighlightKind::KeywordDirective;
+	if (capture_name == "keyword.exception")
+		return HighlightKind::KeywordException;
+	if (capture_name == "keyword.function")
+		return HighlightKind::KeywordFunction;
+	if (capture_name == "keyword.modifier")
+		return HighlightKind::KeywordModifier;
+	if (capture_name == "keyword.operator")
+		return HighlightKind::KeywordOperator;
+	if (capture_name == "keyword.repeat")
+		return HighlightKind::KeywordRepeat;
+	if (capture_name == "keyword.return")
+		return HighlightKind::KeywordReturn;
+	if (capture_name == "keyword.storage")
+		return HighlightKind::KeywordStorage;
 	if (capture_name == "keyword")
 		return HighlightKind::Keyword;
+	if (capture_name == "type.builtin")
+		return HighlightKind::BuiltinType;
 	if (capture_name == "type")
 		return HighlightKind::Type;
+	if (capture_name == "function.builtin")
+		return HighlightKind::BuiltinFunction;
+	if (capture_name == "function.method" || capture_name == "method")
+		return HighlightKind::Method;
+	if (capture_name == "constructor")
+		return HighlightKind::Constructor;
+	if (capture_name == "destructor")
+		return HighlightKind::Destructor;
+	if (capture_name == "function.macro" || capture_name == "macro")
+		return HighlightKind::Macro;
 	if (capture_name == "function")
 		return HighlightKind::Function;
+	if (capture_name == "variable.parameter")
+		return HighlightKind::Parameter;
+	if (capture_name == "variable.member")
+		return HighlightKind::Property;
 	if (capture_name == "variable")
 		return HighlightKind::Variable;
 	if (capture_name == "variable.builtin")
 		return HighlightKind::BuiltinVariable;
+	if (capture_name == "constant.builtin")
+		return HighlightKind::BuiltinConstant;
 	if (capture_name == "constant")
 		return HighlightKind::Constant;
+	if (capture_name == "boolean")
+		return HighlightKind::Boolean;
 	if (capture_name == "module")
 		return HighlightKind::Module;
+	if (capture_name == "string.special")
+		return HighlightKind::SpecialString;
 	if (capture_name == "string")
 		return HighlightKind::String;
+	if (capture_name == "character")
+		return HighlightKind::Character;
 	if (capture_name == "comment")
 		return HighlightKind::Comment;
+	if (capture_name == "number.float")
+		return HighlightKind::Float;
 	if (capture_name == "number")
 		return HighlightKind::Number;
 	if (capture_name == "operator")
 		return HighlightKind::Operator;
+	if (capture_name == "punctuation.bracket")
+		return HighlightKind::PunctuationBracket;
+	if (capture_name == "punctuation.delimiter")
+		return HighlightKind::PunctuationDelimiter;
 	if (capture_name == "punctuation")
 		return HighlightKind::Punctuation;
 	if (capture_name == "property")
 		return HighlightKind::Property;
 	if (capture_name == "parameter")
 		return HighlightKind::Parameter;
+	if (capture_name == "attribute")
+		return HighlightKind::Attribute;
+	if (capture_name == "label")
+		return HighlightKind::Label;
 	if (capture_name == "preproc" || capture_name == "preprocessor")
 		return HighlightKind::Preprocessor;
 

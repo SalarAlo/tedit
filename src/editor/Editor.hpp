@@ -10,7 +10,7 @@
 #include "IBuffer.hpp"
 #include "SyntaxService.hpp"
 
-#include "command_line/CommandLineController.hpp"
+#include "prompt_line/PromptLineController.hpp"
 
 #include "modes/Mode.hpp"
 
@@ -94,7 +94,7 @@ private:
 	std::vector<std::unique_ptr<IBuffer>> m_buffers {};
 	size_t m_buffer_idx {};
 	Cursor* m_cursor {};
-	CommandLineController m_cmd_line {};
+	PromptLineController m_prompt_line {};
 	SyntaxService m_syntax_service {};
 	std::unique_ptr<Mode> m_mode {};
 

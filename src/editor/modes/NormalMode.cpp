@@ -5,7 +5,7 @@
 
 #include "ChangeToCommandMode.hpp"
 #include "ChangeToModeAction.hpp"
-#include "CommandLineController.hpp"
+#include "PromptLineController.hpp"
 #include "DeleteCharAction.hpp"
 #include "DeleteMotionAction.hpp"
 #include "EditOperator.hpp"
@@ -126,7 +126,7 @@ std::unique_ptr<IAction> NormalMode::map_key_action(int key) {
 		    std::make_unique<DeleteCharAction>(),
 		    std::make_unique<ChangeToModeAction>(std::make_unique<InsertMode>()));
 
-	case CommandLineController::COMMAND_LINE_KEY:
+	case PromptLineController::COMMAND_PROMPT_KEY:
 		return std::make_unique<ChangeToCommandMode>();
 
 	default:

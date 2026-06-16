@@ -4,7 +4,7 @@
 #include "Editor.hpp"
 
 namespace Tedit {
-class LeaveCommandMode : public IAction {
+class LeavePromptMode : public IAction {
 public:
 	void execute(Editor& e);
 };

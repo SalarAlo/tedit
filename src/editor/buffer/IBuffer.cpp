@@ -15,4 +15,12 @@ std::string IBuffer::text() const {
 	return output;
 }
 
+std::vector<std::string> IBuffer::lines() const {
+		std::vector<std::string> lines {};
+		for (size_t i {}; std::cmp_less(i, line_count()); i++) {
+			lines.push_back(line(i).data());
+		}
+		return lines;
+	}
+
 }

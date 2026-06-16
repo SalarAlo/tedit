@@ -4,13 +4,13 @@
 #include "Bimap.hpp"
 #include "EditOperator.hpp"
 
-#include "modes/Mode.hpp"
+#include "modes/IMode.hpp"
 
 #include "motions/IMotion.hpp"
 
 namespace Tedit {
 
-class NormalMode final : public Mode {
+class NormalMode final : public IMode {
 public:
 	virtual std::string get_name() override;
 

@@ -3,11 +3,11 @@
 #include "Action.hpp"
 #include "CursorShape.hpp"
 
-#include "modes/Mode.hpp"
+#include "modes/IMode.hpp"
 
 namespace Tedit {
 
-class InsertMode : public Mode {
+class InsertMode : public IMode {
 public:
 	virtual std::string get_name() override;
 	std::unique_ptr<IAction> map_action(int key) override;

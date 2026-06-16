@@ -2,7 +2,7 @@
 
 namespace Tedit {
 
-ChangeToModeAction::ChangeToModeAction(std::unique_ptr<Mode> mode)
+ChangeToModeAction::ChangeToModeAction(std::unique_ptr<IMode> mode)
     : m_mode(std::move(mode)) {
 }
 

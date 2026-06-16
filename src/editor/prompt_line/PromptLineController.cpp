@@ -5,14 +5,21 @@
 
 namespace Tedit {
 
-void PromptLineController::activate() {
+void PromptLineController::activate(std::unique_ptr<IPrompt> prompt) {
+	m_prompt = std::move(prompt);
 	reset_input();
 	m_is_active = true;
 }
 
 void PromptLineController::deactivate() {
 	reset_input();
+	m_prompt = nullptr;
 	m_is_active = false;
+}
+
+void PromptLineController::submit(Editor& editor) {
+	if (m_prompt)
+		m_prompt->submit(editor, m_input);
 }
 
 bool PromptLineController::is_active() const {
@@ -25,6 +32,10 @@ std::string_view PromptLineController::input() const {
 
 std::string_view PromptLineController::inactive_output() const {
 	return m_inactive_output;
+}
+
+char PromptLineController::activation_char() const {
+	return m_prompt ? m_prompt->activation_char() : '\0';
 }
 
 int PromptLineController::cursor_col() const {

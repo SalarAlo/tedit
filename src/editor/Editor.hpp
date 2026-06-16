@@ -8,18 +8,19 @@
 #include "Cursor.hpp"
 #include "HistoryAction.hpp"
 #include "IBuffer.hpp"
+#include "IPrompt.hpp"
 #include "SyntaxService.hpp"
 
-#include "prompt_line/PromptLineController.hpp"
+#include "modes/IMode.hpp"
 
-#include "modes/Mode.hpp"
+#include "prompt_line/PromptLineController.hpp"
 
 namespace fs = std::filesystem;
 
 namespace Tedit {
 
 template <typename T>
-concept buffer_type = std::derived_from<T, IBuffer>;
+concept BufferType = std::derived_from<T, IBuffer>;
 
 class Editor {
 	friend class Renderer;
@@ -38,7 +39,10 @@ public:
 	void newline();
 	void insert_char(char c);
 
-	void exec_and_leave_cmd_line();
+	void submit_prompt_line();
+	void execute_command_prompt(std::string_view input);
+	void execute_search_prompt(std::string_view search);
+	void move_to_next_search();
 	void select();
 
 	void move_left();
@@ -48,7 +52,7 @@ public:
 	void move_end_line();
 	void move_start_line();
 
-	void change_mode(std::unique_ptr<Mode> mode);
+	void change_mode(std::unique_ptr<IMode> mode);
 	void save_buffer();
 	void save_buffer(size_t i);
 
@@ -61,12 +65,12 @@ public:
 	IBuffer* get_buffer(size_t i);
 	const IBuffer* get_buffer(size_t i) const;
 
-	SyntaxService& get_syntax_service() { return m_syntax_service; }
+	SyntaxService& get_syntax_service();
 
-	Mode* get_mode();
+	IMode* get_mode();
 
-	void activate_command_line();
-	void deactivate_command_line();
+	void activate_prompt_line(std::unique_ptr<IPrompt> prompt);
+	void deactivate_prompt_line();
 
 	void switch_tab(bool next);
 
@@ -80,27 +84,30 @@ private:
 	void activate_current_buffer();
 	void try_push_undo(const HistoryAction& action);
 
-	template <buffer_type T>
+	template <BufferType T>
 	T* get_buffer_type() {
 		return dynamic_cast<T*>(get_buffer());
 	}
 
-	template <buffer_type T>
+	template <BufferType T>
 	T* get_buffer_type(size_t i) {
 		return dynamic_cast<T*>(m_buffers[i].get());
 	}
 
 private:
 	std::vector<std::unique_ptr<IBuffer>> m_buffers {};
+
 	size_t m_buffer_idx {};
 	Cursor* m_cursor {};
+
 	PromptLineController m_prompt_line {};
 	SyntaxService m_syntax_service {};
-	std::unique_ptr<Mode> m_mode {};
+
+	std::unique_ptr<IMode> m_mode {};
 
 	int m_last_key {};
 	bool m_should_close {};
-	size_t m_top_row { 0 };
+	int m_top_row { 0 };
 };
 
 }

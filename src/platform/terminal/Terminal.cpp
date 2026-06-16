@@ -11,8 +11,6 @@
 
 #include "Terminal.hpp"
 
-#include "Cursor.hpp"
-
 #include "platform/terminal/CursorShape.hpp"
 
 namespace Tedit {

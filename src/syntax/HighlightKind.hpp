@@ -42,6 +42,8 @@ enum class HighlightKind {
 	Attribute,
 	Label,
 	Preprocessor,
+	SearchOccurrence,
+	Active,
 };
 
 }

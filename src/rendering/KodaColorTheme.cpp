@@ -52,6 +52,8 @@ ColorRGB KodaColorTheme::color_for(HighlightKind kind) const {
 
 	case HighlightKind::Number:
 	case HighlightKind::Float:
+	case HighlightKind::SearchOccurrence:
+	case HighlightKind::Active:
 		return ColorRGB { 217, 186, 115 }; // #d9ba73
 
 	case HighlightKind::Operator:

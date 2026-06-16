@@ -9,7 +9,6 @@
 #include "Editor.hpp"
 
 #include "CommandLineParser.hpp"
-#include "HistoryActionMerger.hpp"
 #include "Renderer.hpp"
 #include "Terminal.hpp"
 
@@ -27,7 +26,6 @@
 namespace Tedit {
 
 namespace {
-
 	std::string join_lines(const IBuffer& buffer, int start_row, int end_row) {
 		std::string text {};
 
@@ -276,7 +274,7 @@ void Editor::ensure_cursor_visible() {
 		return;
 	}
 
-	int visible_rows { std::max<int>(Terminal::get_instance().get_height() - Renderer::BELOW_HEIGHT, 1) };
+	int visible_rows { std::max<int>(Terminal::get_instance().get_height() - Renderer::BELOW_HEIGHT - Renderer::ABOVE_HEIGHT, 1) };
 	if (m_cursor->row >= static_cast<int>(m_top_row) + visible_rows) {
 		m_top_row = static_cast<size_t>(m_cursor->row - visible_rows + 1);
 	}
@@ -295,7 +293,7 @@ void Editor::move_end_line() {
 	m_cursor->col = current_line().size();
 }
 
-void Editor::change_mode(std::unique_ptr<Mode> mode) {
+void Editor::change_mode(std::unique_ptr<IMode> mode) {
 	Terminal::get_instance().set_cursor_shape(mode->get_cursor_shape());
 	m_mode = std::move(mode);
 }
@@ -336,19 +334,21 @@ void Editor::save_buffer(size_t i) {
 	m_prompt_line.set_inactive_output("saved buffer \"" + get_buffer(i)->get_name() + "\"");
 }
 
-void Editor::activate_command_line() {
-	m_prompt_line.activate();
+void Editor::activate_prompt_line(std::unique_ptr<IPrompt> prompt) {
+	m_prompt_line.activate(std::move(prompt));
 }
 
-void Editor::deactivate_command_line() {
+void Editor::deactivate_prompt_line() {
 	m_prompt_line.deactivate();
 }
 
-void Editor::exec_and_leave_cmd_line() {
-	CommandLineParser parser { m_prompt_line.input() };
-	auto result { parser.parse() };
+void Editor::submit_prompt_line() {
+	m_prompt_line.submit(*this);
+}
 
-	deactivate_command_line();
+void Editor::execute_command_prompt(std::string_view input) {
+	CommandLineParser parser { input };
+	auto result { parser.parse() };
 
 	if (result.has_value()) {
 		switch (result->type) {
@@ -393,7 +393,7 @@ void Editor::exec_and_leave_cmd_line() {
 
 void Editor::move_start_line() { m_cursor->col = 0; }
 
-Mode* Editor::get_mode() { return m_mode.get(); }
+IMode* Editor::get_mode() { return m_mode.get(); }
 
 void Editor::open_path(const fs::path& path, bool replace) {
 	open_buffer(std::make_unique<TextBuffer>(std::make_unique<FileBufferSource>(path)), replace);
@@ -458,5 +458,13 @@ void Editor::undo() {
 	if (history_buffer)
 		history_buffer->undo();
 }
+
+SyntaxService& Editor::get_syntax_service() { return m_syntax_service; }
+
+void Editor::execute_search_prompt(std::string_view search) {
+	get_buffer()->search_controller.submit(get_buffer()->lines(), search);
+}
+
+void Editor::move_to_next_search() { get_buffer()->search_controller.move_to_next(*m_cursor); }
 
 }

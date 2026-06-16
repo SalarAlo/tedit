@@ -3,15 +3,17 @@
 
 #include "NormalMode.hpp"
 
-#include "ChangeToCommandMode.hpp"
 #include "ChangeToModeAction.hpp"
-#include "PromptLineController.hpp"
+#include "ChangeToPromptMode.hpp"
+#include "CommandPrompt.hpp"
 #include "DeleteCharAction.hpp"
 #include "DeleteMotionAction.hpp"
 #include "EditOperator.hpp"
 #include "InsertMode.hpp"
 #include "LineMotion.hpp"
 #include "MoveMotionAction.hpp"
+#include "NextCursorSearchAction.hpp"
+#include "SearchPrompt.hpp"
 #include "SelectAction.hpp"
 #include "SequenceAction.hpp"
 #include "SwitchTabAction.hpp"
@@ -96,6 +98,8 @@ std::unique_ptr<IAction> NormalMode::map_key_action(int key) {
 		return sequence(
 		    std::make_unique<MoveMotionAction>(std::make_unique<RightMotion>()),
 		    std::make_unique<ChangeToModeAction>(std::make_unique<InsertMode>()));
+	case 'n':
+		return std::make_unique<NextCursorSearchAction>();
 
 	case 'o':
 		return sequence(
@@ -126,8 +130,10 @@ std::unique_ptr<IAction> NormalMode::map_key_action(int key) {
 		    std::make_unique<DeleteCharAction>(),
 		    std::make_unique<ChangeToModeAction>(std::make_unique<InsertMode>()));
 
-	case PromptLineController::COMMAND_PROMPT_KEY:
-		return std::make_unique<ChangeToCommandMode>();
+	case ':':
+		return std::make_unique<ChangeToPromptMode>(std::make_unique<CommandPrompt>());
+	case '?':
+		return std::make_unique<ChangeToPromptMode>(std::make_unique<SearchPrompt>());
 
 	default:
 		return nullptr;

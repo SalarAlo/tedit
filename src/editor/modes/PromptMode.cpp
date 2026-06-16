@@ -1,19 +1,20 @@
-#include "CommandMode.hpp"
+#include "PromptMode.hpp"
 
 #include "BackspaceAction.hpp"
-#include "ExecAndLeaveCommandMode.hpp"
+#include "ExecAndLeavePromptMode.hpp"
 #include "InsertCharAction.hpp"
-#include "LeaveCommandMode.hpp"
+#include "LeavePromptMode.hpp"
 #include "MoveMotionAction.hpp"
+
 #include "motions/LeftMotion.hpp"
 #include "motions/RightMotion.hpp"
 
 namespace Tedit {
 
-std::unique_ptr<IAction> CommandMode::map_action(int key) {
+std::unique_ptr<IAction> PromptMode::map_action(int key) {
 	switch (key) {
 	case 27:
-		return std::make_unique<LeaveCommandMode>();
+		return std::make_unique<LeavePromptMode>();
 
 	case KEY_LEFT:
 		return std::make_unique<MoveMotionAction>(std::make_unique<LeftMotion>());
@@ -27,13 +28,13 @@ std::unique_ptr<IAction> CommandMode::map_action(int key) {
 
 	case '\n':
 	case '\r':
-		return std::make_unique<ExecAndLeaveCommandMode>();
+		return std::make_unique<ExecAndLeavePromptMode>();
 
 	default:
 		return std::make_unique<InsertCharAction>(key);
 	}
 }
 
-std::string CommandMode::get_name() { return "command"; }
+std::string PromptMode::get_name() { return "prompt"; }
 
 }

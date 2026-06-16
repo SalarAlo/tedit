@@ -4,10 +4,14 @@
 #include <string_view>
 
 #include "Cursor.hpp"
+#include "SearchController.hpp"
 
 namespace Tedit {
 
 class IBuffer {
+public:
+	SearchController search_controller {};
+
 public:
 	virtual ~IBuffer() = default;
 
@@ -16,6 +20,7 @@ public:
 	virtual std::string get_name() const = 0;
 
 	std::string text() const;
+	std::vector<std::string> lines() const;
 
 	Cursor& get_cursor();
 	const Cursor& get_cursor() const;

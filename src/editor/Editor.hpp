@@ -9,6 +9,7 @@
 #include "HistoryAction.hpp"
 #include "IBuffer.hpp"
 #include "IPrompt.hpp"
+#include "RenderContext.hpp"
 #include "SyntaxService.hpp"
 
 #include "modes/IMode.hpp"
@@ -23,8 +24,6 @@ template <typename T>
 concept BufferType = std::derived_from<T, IBuffer>;
 
 class Editor {
-	friend class Renderer;
-
 public:
 	Editor();
 
@@ -78,6 +77,8 @@ public:
 	void set_cursor(const Cursor& cursor);
 
 	void undo();
+
+	RenderContext create_render_context();
 
 private:
 	void ensure_cursor_visible();

@@ -9,6 +9,7 @@
 #include "Editor.hpp"
 
 #include "CommandLineParser.hpp"
+#include "HighlightKind.hpp"
 #include "Renderer.hpp"
 #include "Terminal.hpp"
 
@@ -283,6 +284,64 @@ void Editor::ensure_cursor_visible() {
 void Editor::set_cursor(const Cursor& cursor) {
 	get_buffer()->set_cursor(cursor);
 	ensure_cursor_visible();
+}
+
+RenderContext Editor::create_render_context() {
+	auto* active_buffer { get_buffer() };
+
+	int visible_rows { std::max<int>(Terminal::get_instance().get_height() - Renderer::BELOW_HEIGHT - Renderer::ABOVE_HEIGHT, 1) };
+	int last_visible_row { std::min<int>(m_top_row + visible_rows, active_buffer->line_count()) };
+
+	std::vector<RenderLine> visible_lines {};
+	for (int row { m_top_row }; row < last_visible_row; ++row) {
+		visible_lines.push_back(RenderLine {
+		    .row = row,
+		    .text = std::string(active_buffer->line(row)),
+		});
+	}
+
+	std::vector<BufferTabView> tabs {};
+	for (size_t i {}; i < m_buffers.size(); ++i) {
+		tabs.push_back(BufferTabView {
+		    .name = m_buffers[i]->get_name(),
+		    .active = i == m_buffer_idx,
+		});
+	}
+
+	std::vector<HighlightSpan> highlights {};
+	if (auto* text_buffer { dynamic_cast<const TextBuffer*>(active_buffer) })
+		highlights = m_syntax_service.highlight(*text_buffer);
+
+	const auto& search_occurrences { active_buffer->search_controller.get_occurrences() };
+	for (const auto& search_occurrence : search_occurrences) {
+		highlights.emplace_back(
+		    HighlightKind::SearchOccurrence,
+		    search_occurrence.col,
+		    search_occurrence.col + 1,
+		    search_occurrence.row);
+	}
+
+	PromptLineView prompt {
+		.active = m_prompt_line.is_active(),
+		.text = m_prompt_line.is_active()
+		    ? std::format("{}{}", m_prompt_line.activation_char(), m_prompt_line.input())
+		    : std::string(m_prompt_line.inactive_output()),
+		.cursor_col = m_prompt_line.cursor_col(),
+	};
+
+	return RenderContext {
+		.top_row = m_top_row,
+		.active_buffer_line_count = active_buffer->line_count(),
+		.visible_lines = std::move(visible_lines),
+		.tabs = std::move(tabs),
+		.highlights = std::move(highlights),
+		.active_buffer_name = active_buffer->get_name(),
+		.mode_name = m_mode->get_name(),
+		.mode_details = m_mode->get_mode_details(),
+		.active_cursor = active_buffer->get_cursor(),
+		.cursor_shape = m_mode->get_cursor_shape(),
+		.prompt = std::move(prompt),
+	};
 }
 
 std::string Editor::current_line() const {

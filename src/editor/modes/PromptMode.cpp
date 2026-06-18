@@ -35,6 +35,6 @@ std::unique_ptr<IAction> PromptMode::map_action(int key) {
 	}
 }
 
-std::string PromptMode::get_name() { return "prompt"; }
+std::string PromptMode::get_name() const { return "prompt"; }
 
 }

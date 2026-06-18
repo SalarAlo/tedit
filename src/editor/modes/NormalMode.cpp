@@ -41,7 +41,7 @@ Bimap<char, EditOperator> NormalMode::m_operators {
 	}()
 };
 
-std::string NormalMode::get_name() {
+std::string NormalMode::get_name() const {
 	return "normal";
 }
 
@@ -201,7 +201,7 @@ std::unique_ptr<IAction> NormalMode::map_operator_action(EditOperator op, std::u
 	}
 }
 
-std::string NormalMode::get_mode_details() {
+std::string NormalMode::get_mode_details() const {
 	auto mode_details { std::to_string(m_count) };
 
 	if (mode_details == "0")

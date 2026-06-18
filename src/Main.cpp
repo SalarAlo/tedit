@@ -8,10 +8,10 @@ int main() {
 	Tedit::Renderer renderer {};
 	Tedit::Editor editor {};
 
-	renderer.render(editor);
+	renderer.render(editor.create_render_context());
 
 	while (!editor.should_close()) {
-		renderer.render(editor);
+		renderer.render(editor.create_render_context());
 		editor.handle_key(Tedit::Terminal::get_instance().read_key());
 	}
 

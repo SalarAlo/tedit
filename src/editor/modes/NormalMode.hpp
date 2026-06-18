@@ -12,7 +12,7 @@ namespace Tedit {
 
 class NormalMode final : public IMode {
 public:
-	virtual std::string get_name() override;
+	virtual std::string get_name() const override;
 
 	std::unique_ptr<IAction> map_action(int key) override;
 
@@ -21,7 +21,7 @@ private:
 	std::unique_ptr<IMotion> map_motion(int key);
 	std::unique_ptr<IAction> map_operator_action(EditOperator op, std::unique_ptr<IMotion> motion);
 
-	std::string get_mode_details() override;
+	std::string get_mode_details() const override;
 	bool is_count_key(int key) const;
 	bool is_operator_key(int key) const;
 

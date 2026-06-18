@@ -7,6 +7,7 @@
 #include "NewlineAction.hpp"
 #include "NormalMode.hpp"
 #include "SequenceAction.hpp"
+
 #include "motions/DownMotion.hpp"
 #include "motions/LeftMotion.hpp"
 #include "motions/RightMotion.hpp"
@@ -14,7 +15,7 @@
 
 namespace Tedit {
 
-std::string InsertMode::get_name() { return "insert"; }
+std::string InsertMode::get_name() const { return "insert"; }
 
 std::unique_ptr<IAction> InsertMode::map_action(int key) {
 	switch (key) {
@@ -45,6 +46,6 @@ std::unique_ptr<IAction> InsertMode::map_action(int key) {
 	}
 }
 
-CursorShape InsertMode::get_cursor_shape() { return CursorShape::Beam; }
+CursorShape InsertMode::get_cursor_shape() const { return CursorShape::Beam; }
 
 }

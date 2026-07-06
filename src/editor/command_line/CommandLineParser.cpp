@@ -51,6 +51,17 @@ std::expected<ParsedCommand, std::string> CommandLineParser::parse() {
 		};
 	}
 
+	if (input_raw.cmd == "style") {
+		if (input_raw.args.size() < 1) {
+			return std::unexpected("style command requires one argument: default, spotlight, or minimal.");
+		}
+
+		return ParsedCommand {
+			.type = CommandType::RenderStyle,
+			.args = input_raw.args
+		};
+	}
+
 	if (input_raw.cmd == "o" || input_raw.cmd == "open") {
 		if (input_raw.args.size() < 1) {
 			return std::unexpected("open command requires one argument.");

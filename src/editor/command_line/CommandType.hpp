@@ -9,6 +9,7 @@ enum class CommandType {
 	QuitAll,
 	Open,
 	OpenExplorer,
+	RenderStyle,
 
 };
 

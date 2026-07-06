@@ -10,11 +10,18 @@
 
 namespace Tedit {
 
+enum class PendingInput {
+	None,
+	MacroRecordRegister,
+	MacroReplayRegister,
+
+};
+
 class NormalMode final : public IMode {
 public:
 	virtual std::string get_name() const override;
 
-	std::unique_ptr<IAction> map_action(int key) override;
+	std::unique_ptr<IAction> map_action(Editor& editor, int key) override;
 
 private:
 	std::unique_ptr<IAction> map_key_action(int key);
@@ -32,6 +39,7 @@ private:
 	size_t m_count {};
 	static Bimap<char, EditOperator> m_operators;
 	EditOperator m_pending_edit_operator { EditOperator::None };
+	PendingInput m_pending_input {};
 };
 
 }

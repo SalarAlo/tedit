@@ -6,6 +6,7 @@
 #include "Cursor.hpp"
 #include "CursorShape.hpp"
 #include "HighlightSpan.hpp"
+#include "RenderStyle.hpp"
 
 namespace Tedit {
 
@@ -26,6 +27,8 @@ struct PromptLineView {
 };
 
 struct RenderContext {
+	RenderStyle style { RenderStyle::Default };
+
 	int top_row {};
 	int active_buffer_line_count {};
 

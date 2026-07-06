@@ -42,8 +42,8 @@ int PromptLineController::cursor_col() const {
 	return m_cursor_col;
 }
 
-void PromptLineController::set_inactive_output(std::string output) {
-	m_inactive_output = std::move(output);
+void PromptLineController::set_inactive_output(std::string_view output) {
+	m_inactive_output = output;
 }
 
 void PromptLineController::insert_char(char c) {

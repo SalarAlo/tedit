@@ -17,7 +17,7 @@ namespace Tedit {
 
 std::string InsertMode::get_name() const { return "insert"; }
 
-std::unique_ptr<IAction> InsertMode::map_action(int key) {
+std::unique_ptr<IAction> InsertMode::map_action(Editor&, int key) {
 	switch (key) {
 	case KEY_BACKSPACE:
 	case 127:

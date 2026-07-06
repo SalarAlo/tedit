@@ -51,6 +51,17 @@ TEST_CASE("CommandLineParser parses open command arguments") {
 	REQUIRE(parsed->args[1] == "extra");
 }
 
+TEST_CASE("CommandLineParser parses render style command") {
+	Tedit::CommandLineParser parser { "style spotlight" };
+
+	auto parsed { parser.parse() };
+
+	REQUIRE(parsed.has_value());
+	REQUIRE(parsed->type == Tedit::CommandType::RenderStyle);
+	REQUIRE(parsed->args.size() == 1);
+	REQUIRE(parsed->args[0] == "spotlight");
+}
+
 TEST_CASE("CommandLineParser reports invalid commands") {
 	{
 		Tedit::CommandLineParser parser { "" };
@@ -66,6 +77,14 @@ TEST_CASE("CommandLineParser reports invalid commands") {
 
 		REQUIRE_FALSE(parsed.has_value());
 		REQUIRE(parsed.error() == "open command requires one argument.");
+	}
+
+	{
+		Tedit::CommandLineParser parser { "style" };
+		auto parsed { parser.parse() };
+
+		REQUIRE_FALSE(parsed.has_value());
+		REQUIRE(parsed.error() == "style command requires one argument: default, spotlight, or minimal.");
 	}
 
 	{

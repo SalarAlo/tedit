@@ -68,6 +68,8 @@ private:
 	std::pair<int, int> cursor_screen_position(int gutter_width) const;
 	std::string_view cursor_line_text() const;
 	bool is_current_line(int line) const;
+	bool is_minimal_style() const;
+	bool is_spotlight_style() const;
 	int make_relative(int line);
 	std::string format_line_number(int line, int width);
 

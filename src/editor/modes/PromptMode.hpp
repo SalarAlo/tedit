@@ -6,7 +6,7 @@ namespace Tedit {
 class PromptMode : public IMode {
 public:
 	std::string get_name() const override;
-	std::unique_ptr<IAction> map_action(int key) override;
+	std::unique_ptr<IAction> map_action(Editor& editor, int key) override;
 };
 
 }

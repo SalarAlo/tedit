@@ -22,7 +22,7 @@ public:
 	char activation_char() const;
 	int cursor_col() const;
 
-	void set_inactive_output(std::string output);
+	void set_inactive_output(std::string_view output);
 
 	void insert_char(char c);
 	void backspace();

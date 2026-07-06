@@ -8,6 +8,7 @@ class IAction {
 public:
 	virtual ~IAction() = default;
 	virtual void execute(Editor&) = 0;
+	virtual bool records_macro_key() const;
 };
 
 }

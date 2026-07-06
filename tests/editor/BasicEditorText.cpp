@@ -373,3 +373,108 @@ TEST_CASE("Undo repeated delete preserves deleted text order") {
 	REQUIRE(editor.get_buffer()->get_cursor().row == 0);
 	REQUIRE(editor.get_buffer()->get_cursor().col == 1);
 }
+
+TEST_CASE("Recorded macro replays editor input") {
+	Tedit::Editor editor {};
+
+	editor.handle_key('q');
+	editor.handle_key('a');
+	editor.handle_key('i');
+	editor.handle_key('x');
+	editor.handle_key(27);
+	editor.handle_key('q');
+
+	editor.handle_key('@');
+	editor.handle_key('a');
+
+	REQUIRE(editor.get_buffer()->line(0) == "xx");
+}
+
+TEST_CASE("Stopping macro recording does not leave register input pending") {
+	Tedit::Editor editor {};
+
+	editor.handle_key('q');
+	editor.handle_key('a');
+	editor.handle_key('i');
+	editor.handle_key('x');
+	editor.handle_key(27);
+	editor.handle_key('q');
+
+	editor.handle_key('x');
+	editor.handle_key('@');
+	editor.handle_key('a');
+
+	REQUIRE(editor.get_buffer()->line(0) == "x");
+}
+
+TEST_CASE("Macro stop key is not recorded into replayed input") {
+	Tedit::Editor editor {};
+
+	editor.handle_key('q');
+	editor.handle_key('a');
+	editor.handle_key('i');
+	editor.handle_key('x');
+	editor.handle_key(27);
+	editor.handle_key('q');
+
+	editor.handle_key('@');
+	editor.handle_key('a');
+	editor.handle_key('i');
+	editor.handle_key('y');
+	editor.handle_key(27);
+
+	REQUIRE(editor.get_buffer()->line(0) == "yxx");
+}
+
+TEST_CASE("Macro records literal q while in insert mode") {
+	Tedit::Editor editor {};
+
+	editor.handle_key('q');
+	editor.handle_key('a');
+	editor.handle_key('i');
+	editor.handle_key('q');
+	editor.handle_key(27);
+	editor.handle_key('q');
+
+	editor.handle_key('@');
+	editor.handle_key('a');
+
+	REQUIRE(editor.get_buffer()->line(0) == "qq");
+}
+
+TEST_CASE("Invalid macro register does not start recording") {
+	Tedit::Editor editor {};
+
+	editor.handle_key('q');
+	editor.handle_key('1');
+	editor.handle_key('i');
+	editor.handle_key('x');
+	editor.handle_key(27);
+
+	editor.handle_key('@');
+	editor.handle_key('1');
+
+	REQUIRE(editor.get_buffer()->line(0) == "x");
+}
+
+TEST_CASE("Macro replay does not record into active macro") {
+	Tedit::Editor editor {};
+
+	editor.handle_key('q');
+	editor.handle_key('a');
+	editor.handle_key('i');
+	editor.handle_key('x');
+	editor.handle_key(27);
+	editor.handle_key('q');
+
+	editor.handle_key('q');
+	editor.handle_key('b');
+	editor.handle_key('@');
+	editor.handle_key('a');
+	editor.handle_key('q');
+
+	editor.handle_key('@');
+	editor.handle_key('b');
+
+	REQUIRE(editor.get_buffer()->line(0) == "xxx");
+}

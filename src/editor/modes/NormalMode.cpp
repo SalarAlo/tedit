@@ -9,6 +9,8 @@
 #include "DeleteCharAction.hpp"
 #include "DeleteMotionAction.hpp"
 #include "EditOperator.hpp"
+#include "Editor.hpp"
+#include "ExecuteMacroAction.hpp"
 #include "InsertMode.hpp"
 #include "LineMotion.hpp"
 #include "MoveMotionAction.hpp"
@@ -16,7 +18,9 @@
 #include "SearchPrompt.hpp"
 #include "SelectAction.hpp"
 #include "SequenceAction.hpp"
+#include "StopRecordMacroAction.hpp"
 #include "SwitchTabAction.hpp"
+#include "ToggleRecordMacroAction.hpp"
 #include "UndoAction.hpp"
 #include "WordMotion.hpp"
 
@@ -45,7 +49,20 @@ std::string NormalMode::get_name() const {
 	return "normal";
 }
 
-std::unique_ptr<IAction> NormalMode::map_action(int key) {
+std::unique_ptr<IAction> NormalMode::map_action(Editor& editor, int key) {
+	if (m_pending_input == PendingInput::MacroRecordRegister) {
+		m_pending_input = PendingInput::None;
+		return std::make_unique<ToggleRecordMacroAction>(key);
+	}
+
+	if (m_pending_input == PendingInput::MacroReplayRegister) {
+		m_pending_input = PendingInput::None;
+		return std::make_unique<ExecuteMacroAction>(key);
+	}
+
+	if (editor.is_recording() && key == 'q')
+		return std::make_unique<StopRecordMacroAction>();
+
 	if (is_count_key(key)) {
 		m_count = m_count * 10 + (key - '0');
 		return nullptr;
@@ -134,6 +151,14 @@ std::unique_ptr<IAction> NormalMode::map_key_action(int key) {
 		return std::make_unique<ChangeToPromptMode>(std::make_unique<CommandPrompt>());
 	case '?':
 		return std::make_unique<ChangeToPromptMode>(std::make_unique<SearchPrompt>());
+
+	case 'q':
+		m_pending_input = PendingInput::MacroRecordRegister;
+		return nullptr;
+
+	case '@':
+		m_pending_input = PendingInput::MacroReplayRegister;
+		return nullptr;
 
 	default:
 		return nullptr;

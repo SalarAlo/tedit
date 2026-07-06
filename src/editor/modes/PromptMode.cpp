@@ -11,7 +11,7 @@
 
 namespace Tedit {
 
-std::unique_ptr<IAction> PromptMode::map_action(int key) {
+std::unique_ptr<IAction> PromptMode::map_action(Editor&, int key) {
 	switch (key) {
 	case 27:
 		return std::make_unique<LeavePromptMode>();

@@ -41,7 +41,9 @@ void Renderer::render_top_padding() {
 }
 
 void Renderer::render_editor(int gutter_width) {
-	draw_gutter(gutter_width, true);
+	if (!is_minimal_style())
+		draw_gutter(gutter_width, true);
+
 	draw_text(gutter_width);
 }
 
@@ -95,11 +97,17 @@ void Renderer::draw_line_number(int screen_row, int line_number, int gutter_widt
 	if (is_current_line)
 		Terminal::get_instance().enable_style(TextStyle::Bold);
 
+	ColorRGB color { Colors::WHITE };
+	if (is_current_line)
+		color = is_spotlight_style() ? ColorRGB { 84, 211, 194 } : ColorRGB { 232, 187, 90 };
+	else if (is_spotlight_style())
+		color = ColorRGB { 84, 92, 104 };
+
 	DrawCall draw_number_gutter {
 		screen_row,
 		0,
 		number,
-		is_current_line ? ColorRGB { 232, 187, 90 } : Colors::WHITE
+		color
 	};
 	Terminal::get_instance().draw_text(draw_number_gutter);
 
@@ -120,6 +128,17 @@ void Renderer::render_visible_lines(int gutter_width) {
 }
 
 void Renderer::render_single_line(const RenderLine& render_line, int gutter_width, const HighlightsLineMap& highlights_map) {
+	if (is_spotlight_style() && !is_current_line(render_line.row)) {
+		Terminal::get_instance().draw_text(DrawCall {
+		    screen_row_from_buffer_row(render_line.row),
+		    text_start_column(gutter_width),
+		    expand_tabs(render_line.text),
+		    ColorRGB { 88, 96, 108 },
+		});
+		Terminal::get_instance().clear_to_end_of_line();
+		return;
+	}
+
 	draw_highlighted_line(
 	    screen_row_from_buffer_row(render_line.row),
 	    text_start_column(gutter_width),
@@ -204,7 +223,14 @@ void Renderer::draw_bar_above() {
 	int bar_row { 0 };
 	Terminal::get_instance().clear_line(bar_row);
 
-	int offset_column {};
+	if (is_minimal_style())
+		return;
+
+	if (is_spotlight_style()) {
+		Terminal::get_instance().draw_text(DrawCall { bar_row, 0, "SPOTLIGHT ", ColorRGB { 84, 211, 194 } });
+	}
+
+	int offset_column { is_spotlight_style() ? 10 : 0 };
 	auto buffer_amount { m_rctx.tabs.size() };
 	for (size_t i {}; i < buffer_amount; i++) {
 		draw_buffer_tab(bar_row, offset_column, m_rctx.tabs[i]);
@@ -238,6 +264,14 @@ void Renderer::draw_bar_below() {
 	auto [width, height] = Terminal::get_instance().get_terminal_dimensions();
 	int bar_row { height - BELOW_HEIGHT };
 	Terminal::get_instance().clear_line(bar_row);
+
+	if (is_minimal_style()) {
+		const std::string left { std::format("{}  {}", m_rctx.mode_name, m_rctx.active_buffer_name) };
+		auto cursor_str { m_rctx.active_cursor.to_string() };
+		Terminal::get_instance().draw_text(DrawCall { bar_row, 0, left, ColorRGB { 196, 202, 215 } });
+		draw_cursor_status(bar_row, width, cursor_str);
+		return;
+	}
 
 	const std::string mode_str { std::format("-- {} --", m_rctx.mode_name) };
 	auto cursor_str { m_rctx.active_cursor.to_string() };
@@ -323,6 +357,9 @@ std::vector<HighlightSpan> Renderer::highlights_for_line(const HighlightsLineMap
 }
 
 int Renderer::gutter_width() const {
+	if (is_minimal_style())
+		return 0;
+
 	auto length { std::to_string(m_rctx.active_buffer_line_count).size() };
 	return std::max<int>(2, length);
 }
@@ -332,6 +369,9 @@ int Renderer::gutter_cell_width(int gutter_width) const {
 }
 
 int Renderer::text_start_column(int gutter_width) const {
+	if (is_minimal_style())
+		return 0;
+
 	return gutter_cell_width(gutter_width) + INDENT;
 }
 
@@ -374,6 +414,14 @@ std::string_view Renderer::cursor_line_text() const {
 
 bool Renderer::is_current_line(int line) const {
 	return m_rctx.active_cursor.row == line;
+}
+
+bool Renderer::is_minimal_style() const {
+	return m_rctx.style == RenderStyle::Minimal;
+}
+
+bool Renderer::is_spotlight_style() const {
+	return m_rctx.style == RenderStyle::Spotlight;
 }
 
 }
